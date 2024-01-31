@@ -86,9 +86,9 @@
 
 - name: Install OLDCC requirements
   ansible.builtin.import_tasks:
-      file: oldcc-tasks.yml
+      file: oldcc-base.yml
   tags:
-      - oldcc-tasks
+      - oldcc-base
 
 - name: Include CAT I patches
   ansible.builtin.import_tasks:
