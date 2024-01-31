@@ -1,37 +1,38 @@
 ---
 
-# - name: Install AWS Cloudwatch Agent
-#   tags: build-servers
-#   block:
-#     - name: Download CloudWatch Agent
-#       ansible.builtin.get_url:
-#         url: "https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm"
-#         dest: "/tmp/amazon-cloudwatch-agent.rpm"
-
-#     - name: Install CloudWatch Agent
-#       ansible.builtin.package:
-#         name: "/tmp/amazon-cloudwatch-agent.rpm"
-#         state: present
-#         disable_gpg_check: true
-
-#     - name: Copy CloudWatch Agent Configuration file
-#       ansible.builtin.copy:
-#         src: "./files/{{ CONFIG_FILE_PATH }}/cw_config.json"
-#         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
-#         owner: root
-#         group: root
-#         mode: 0644
-#       notify: "Enable CloudWatch Agent"
-
-# - name: Copy fstab file to /etc/fstab.tmp
-#   tags: build-servers
-#   ansible.builtin.copy:
-#     src: "./files//{{ CONFIG_FILE_PATH }}/fstab"
-#     dest: /etc/fstab.tmp
-#     owner: root
-#     group: root
-#     mode: 0644
-
 - name: Ansible playbook to retrieve environment variables on linux servers.
   debug:
-    msg: "{{ansible_env}}"
+    msg: "{{ ansible_env }}"
+
+- name: Install AWS Cloudwatch Agent
+  tags: build-servers
+  block:
+    - name: Download CloudWatch Agent
+      ansible.builtin.get_url:
+        url: "https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm"
+        dest: "/tmp/amazon-cloudwatch-agent.rpm"
+
+    - name: Install CloudWatch Agent
+      ansible.builtin.package:
+        name: "/tmp/amazon-cloudwatch-agent.rpm"
+        state: present
+        disable_gpg_check: true
+
+    - name: Copy CloudWatch Agent Configuration file
+      ansible.builtin.copy:
+        src: "./files/{{ REPO_NAME }}/cw_config.json"
+        dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+        owner: root
+        group: root
+        mode: 0644
+      notify: "Enable CloudWatch Agent"
+
+- name: Copy fstab file to /etc/fstab.tmp
+  tags: build-servers
+  ansible.builtin.copy:
+    src: "./files//{{ REPO_NAME }}/fstab"
+    dest: /etc/fstab.tmp
+    owner: root
+    group: root
+    mode: 0644
+
