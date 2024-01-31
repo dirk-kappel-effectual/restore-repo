@@ -90,7 +90,7 @@
 
     - name: Copy CloudWatch Agent Configuration file
       ansible.builtin.copy:
-        src: /files/cw_config.json
+        src: ./files/cw_config.json
         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
         owner: root
         group: root
@@ -101,7 +101,7 @@
 - name: Copy fstab file to /etc/fstab.tmp
   tags: build-servers
   ansible.builtin.copy:
-    src: /files/fstab
+    src: ./files/fstab
     dest: /etc/fstab.tmp
     owner: root
     group: root
