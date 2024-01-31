@@ -1,0 +1,8 @@
+---
+
+- hosts: default
+  become: true
+
+  roles:
+    - role: "{{ playbook_dir }}"
+      tags: server-build

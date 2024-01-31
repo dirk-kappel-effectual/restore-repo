@@ -75,7 +75,7 @@
     mode: '0644'
 
 - name: Install AWS Cloudwatch Agent
-  tags: cloudwatch
+  tags: build-servers
   block:
     - name: Download CloudWatch Agent
       ansible.builtin.get_url:
@@ -88,9 +88,9 @@
         state: present
         disable_gpg_check: true
 
-    - name: Configure CloudWatch Agent
-      ansible.builtin.template:
-        src: "cw_config_{{ server_build }}.j2"
+    - name: Copy CloudWatch Agent Configuration file
+      ansible.builtin.copy:
+        src: /files/cw_config.json
         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
         owner: root
         group: root
@@ -99,9 +99,9 @@
   when: not base_build
 
 - name: Copy fstab file to /etc/fstab.tmp
-  tags: fstab
-  ansible.builtin.template:
-    src: "fstab_{{ server_build }}.j2"
+  tags: build-servers
+  ansible.builtin.copy:
+    src: /files/fstab
     dest: /etc/fstab.tmp
     owner: root
     group: root
