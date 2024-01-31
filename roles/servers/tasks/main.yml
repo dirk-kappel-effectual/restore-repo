@@ -1,79 +1,5 @@
 ---
 
-- name: Install Amazon SSM Agent
-  tags: ssm
-  block:
-    - name: Download amazon-ssm-agent.rpm
-      ansible.builtin.get_url:
-        url: https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-        dest: /tmp/amazon-ssm-agent.rpm
-
-    - name: Install amazon-ssm-agent.rpm
-      ansible.builtin.package:
-        name: /tmp/amazon-ssm-agent.rpm
-        disable_gpg_check: true
-        state: latest
-      notify: "Start and Enable SSM Agent"
-
-- name: Install Nano, Unzip, Wget
-  tags: nano,unzip,wget
-  ansible.builtin.package:
-    name:
-      - nano
-      - unzip
-      - wget
-    state: latest
-
-- name: Download EPEL repository
-  tags: epel
-  ansible.builtin.get_url:
-    url: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    dest: /tmp/epel-release-latest-7.noarch.rpm
-
-- name: Install EPEL package
-  tags: epel
-  ansible.builtin.package:
-    name: /tmp/epel-release-latest-7.noarch.rpm
-    disable_gpg_check: true
-    state: latest
-
-- name: Install AWS CLI v2
-  tags: awscli
-  block:
-    - name: Check if awscliv2 is installed.
-      ansible.builtin.command: 
-        cmd: "aws --version"
-      register: awscliv2_installed
-      failed_when: false
-      changed_when: false
-
-    - name: Download awscliv2 installer.
-      ansible.builtin.unarchive: 
-        src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: /home/ec2-user
-        remote_src: yes
-      when: awscliv2_installed.rc != 0
-
-    - name: Install AWS CLI v2
-      ansible.builtin.command: 
-        cmd: "/home/ec2-user/aws/install -b /usr/bin/"
-      when: awscliv2_installed.rc != 0
-
-# - name: Install mcafee virus protection
-#   tags: mcafee
-#   ansible.builtin.script: ./scripts/install.sh -i
-
-- name: Import DoD root and WCF certificates into linux CA store
-  tags: import_certs
-  ansible.builtin.script: ./scripts/add-dod-and-wcf-certs.sh
-
-- name: Install AWS certificate bundle for GovCloud regions
-  tags: import_certs
-  ansible.builtin.get_url:
-    url: https://truststore.pki.us-gov-west-1.rds.amazonaws.com/global/global-bundle.pem
-    dest: /etc/pki/tls/certs/global-bundle.pem
-    mode: '0644'
-
 - name: Install AWS Cloudwatch Agent
   tags: build-servers
   block:
@@ -96,7 +22,6 @@
         group: root
         mode: 0644
       notify: "Enable CloudWatch Agent"
-  when: not base_build
 
 - name: Copy fstab file to /etc/fstab.tmp
   tags: build-servers
@@ -106,4 +31,3 @@
     owner: root
     group: root
     mode: 0644
-  when: not base_build
