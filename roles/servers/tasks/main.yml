@@ -2,7 +2,7 @@
 
 - name: Ansible playbook to retrieve environment variables on linux servers.
   debug:
-    msg: "{{ HCP_BUCKET_NAME }}"
+    msg: "{{ lookup('ansible.builtin.env', 'HCP_BUCKET_NAME' }}"
 
 - name: Install AWS Cloudwatch Agent
   tags: build-servers
