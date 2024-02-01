@@ -36,7 +36,7 @@
 #             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
 #             success_msg: "You a password set for the {{ ansible_env.SUDO_USER }}"
 #         vars:
-#             sudo_password_rule: RHEL-07-010340  # pragma: allowlist secret
+#             sudo_password_rule: RHEL-07-010340  
 #   when:
 #       - rhel_07_010340
 #       - ansible_env.SUDO_USER is defined
@@ -53,8 +53,8 @@
 
 - name: Check rhel7stig_bootloader_password_hash variable has been changed
   ansible.builtin.assert:
-      that: rhel7stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
-      msg: "This role will not be able to run single user password commands as rhel7stig_bootloader_password_hash variable has not been set. You can create the hash on a RHEL 7.9 system using the command 'grub2-mkpasswd-pbkdf2'"  # pragma: allowlist secret
+      that: rhel7stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  
+      msg: "This role will not be able to run single user password commands as rhel7stig_bootloader_password_hash variable has not been set. You can create the hash on a RHEL 7.9 system using the command 'grub2-mkpasswd-pbkdf2'"  
   when:
       - rhel_07_010481 or
         rhel_07_010482 or
@@ -65,7 +65,6 @@
       - RHEL-07-010482
       - RHEL-07-010483
       - RHEL-07-010491
-      - cat1
 
 - name: Include OS specific variables
   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
@@ -84,47 +83,47 @@
   tags:
       - always
 
-- name: Install OLDCC requirements
-  ansible.builtin.import_tasks:
-      file: oldcc-base.yml
-  tags:
-      - oldcc-base
+# - name: Install OLDCC requirements
+#   ansible.builtin.import_tasks:
+#       file: oldcc-base.yml
+#   tags:
+#       - oldcc-base
 
-- name: Include CAT I patches
-  ansible.builtin.import_tasks:
-      file: fix-cat1.yml
-  when: rhel7stig_cat1_patch
-  tags:
-      - cat1
-      - high
+# - name: Include CAT I patches
+#   ansible.builtin.import_tasks:
+#       file: fix-cat1.yml
+#   when: rhel7stig_cat1_patch
+#   tags:
+#       - cat1
+#       - high
 
-- name: Include CAT II patches
-  ansible.builtin.import_tasks:
-      file: fix-cat2.yml
-  when: rhel7stig_cat2_patch
-  tags:
-      - cat2
-      - medium
+# - name: Include CAT II patches
+#   ansible.builtin.import_tasks:
+#       file: fix-cat2.yml
+#   when: rhel7stig_cat2_patch
+#   tags:
+#       - cat2
+#       - medium
 
-- name: Include CAT III patches
-  ansible.builtin.import_tasks:
-      file: fix-cat3.yml
-  when: rhel7stig_cat3_patch
-  tags:
-      - cat3
-      - low
+# - name: Include CAT III patches
+#   ansible.builtin.import_tasks:
+#       file: fix-cat3.yml
+#   when: rhel7stig_cat3_patch
+#   tags:
+#       - cat3
+#       - low
 
-- name: update auditd
-  ansible.builtin.template:
-      src: audit/99_auditd.rules.j2
-      dest: /etc/audit/rules.d/99_auditd.rules
-      owner: root
-      group: root
-      mode: 0600
-  register: auditd_file
-  notify: restart auditd
-  when:
-      - update_audit_template
+# - name: update auditd
+#   ansible.builtin.template:
+#       src: audit/99_auditd.rules.j2
+#       dest: /etc/audit/rules.d/99_auditd.rules
+#       owner: root
+#       group: root
+#       mode: 0600
+#   register: auditd_file
+#   notify: restart auditd
+#   when:
+#       - update_audit_template
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers

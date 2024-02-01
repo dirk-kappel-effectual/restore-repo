@@ -1,0 +1,33 @@
+- name: "MEDIUM | RHEL-07-040100 | PATCH | The Red Hat Enterprise Linux operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management Component Local Service Assessment (PPSM CLSA) and vulnerability assessments."
+  block:
+    - name: "MEDIUM | RHEL-07-040100 | PATCH | Install iptables"
+      ansible.builtin.package:
+        name: iptables
+        state: present
+      when:
+        - "'iptables' not in ansible_facts.packages"
+
+    - name: "MEDIUM | RHEL-07-040100 | PATCH | Stop iptables services"
+      ansible.builtin.systemd_service:
+        name: iptables
+        state: stopped
+
+    - name: "MEDIUM | RHEL-07-040100 | PATCH | Copy over iptables config file"
+      ansible.builtin.copy:
+        src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/iptables"
+        dest: /tmp/iptables
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: "MEDIUM | RHEL-07-040100 | PATCH | Restore iptables from file"
+      ansible.builtin.shell: iptables-restore /tmp/iptables
+      notify: start iptables
+
+    - name: "MEDIUM | RHEL-07-040100 | PATCH | Save iptables configuration file"
+      community.general.iptables_state:
+        state: saved
+        path: /etc/sysconfig/iptables
+  tags:
+      - RHEL-07-040100
+      - firewall

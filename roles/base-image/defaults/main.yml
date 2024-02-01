@@ -53,11 +53,11 @@ setup_audit: false
 # We've defined disruption-high to indicate items that are likely to cause
 # disruption in a normal workflow.  These items can be remediated automatically
 # but are disabled by default to avoid disruption.
-rhel7stig_disruption_high: true
+# rhel7stig_disruption_high: true
 
 # Show "changed" for disruptive items not remediated per disruption-high
 # setting to make them stand out.
-rhel7stig_audit_disruptive: true
+# rhel7stig_audit_disruptive: true
 
 # Skip controls that conflict with travis environments
 # rhel7stig_skip_for_travis: false
@@ -169,7 +169,7 @@ rhel_07_020028: true  # Is required for 20030 &20040
 rhel_07_020029: true
 rhel_07_020030: true
 # Send AIDE reports as mail notifications - Disabled by default as this is a non-ideal way to do notifications
-rhel_07_020040: "{{ rhel7stig_disruption_high }}"
+rhel_07_020040: true
 rhel_07_020100: true
 rhel_07_020101: true
 rhel_07_020110: true
@@ -374,7 +374,7 @@ rhel7stig_min_supported_os_ver:
 
 # RHEL-07-040740
 # If system is not router, run tasks that disable router functions.
-rhel7stig_system_is_router: false
+# rhel7stig_system_is_router: false
 
 # RHEL-07-032000
 # Install and enable a DOD-approved AV program. ClamAV and McAfee (nails)
@@ -408,9 +408,9 @@ rhel7stig_time_service_configs:
               line: maxpoll 10
 
 # The firewall to be used
-rhel7stig_firewall_service: iptables
+# rhel7stig_firewall_service: iptables
 # The toggle to start the firewall service. Set to true the role will start the service for you where needed
-rhel7stig_start_firewall_service: true
+# rhel7stig_start_firewall_service: true
 
 # allowed firewall ports and protocols as found in the command used to discover
 rhel7stig_firewall_ports_protocols:
@@ -428,22 +428,22 @@ rhel7stig_fips_kex: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,dif
 # RHEL-07-040300
 # RHEL-07-040310
 # Install and enable ssh on networked systems
-rhel7stig_ssh_required: true
+# rhel7stig_ssh_required: true
 rhel7stig_ssh_ciphers: "{{ rhel7stig_fips_ciphers }}"
 rhel7stig_ssh_macs: "{{ rhel7stig_fips_macs }}"
 rhel7stig_ssh_kex: "{{ rhel7stig_fips_kex }}"
 
 # RHEL-07-040490
 # If not required, remove vsftpd.
-rhel7stig_vsftpd_required: false
+# rhel7stig_vsftpd_required: false
 
 # RHEL-07-040500
 # If not required, remove tftp
-rhel7stig_tftp_required: false
+# rhel7stig_tftp_required: false
 
 # Service configuration booleans set true to keep service
 rhel7stig_autofs_required: false
-rhel7stig_kdump_required: false
+# rhel7stig_kdump_required: false
 
 # RHEL-07-040800
 # Set the SNMP community string to this from the default of public or private
@@ -619,7 +619,7 @@ rhel7stig_audisp_network_failure_action: syslog
 
 # RHEL-07-040670
 # Network interface promiscuous mode setting will be disabled unless set to true
-rhel7stig_net_promisc_mode_required: false
+# rhel7stig_net_promisc_mode_required: false
 
 # /etc/login.defs settings
 # RHEL-07-010210
@@ -637,7 +637,7 @@ rhel7stig_login_defaults:
     create_home: 'yes'
 
 # Default value - if control is enabled this will run for the valid controls.
-update_audit_template: false
+# update_audit_template: false
 
 # RHEL-07-030300 uncomment and set the value to a remote IP address that can receive audit logs
 # rhel7stig_audisp_remote_server: 10.10.10.10

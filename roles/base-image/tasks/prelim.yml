@@ -35,9 +35,9 @@
             - python36-rpm
             - libselinux-python3
 
-      - name: "PRELIM | Disable Epel repo if installed earlier"
-        ansible.builtin.shell: yum-config-manager disable epel
-        when: epel_installed.changed  # noqa: no-handler
+    #   - name: "PRELIM | Disable Epel repo if installed earlier"
+    #     ansible.builtin.shell: yum-config-manager disable epel
+    #     when: epel_installed.changed
   when:
       - ( ansible_python.version.major == 3  and ansible_python.version.minor == 6 )
   vars:
@@ -60,8 +60,7 @@
             ansible_python_interpreter: "{{ python2_bin }}"
         when:
             - rhel7stig_dconf_audit.rc == 1
-            - rhel7stig_gui
-
+ 
       - name: dconf directory structure
         ansible.builtin.file:
             path: /etc/dconf/db/local.d/locks
@@ -106,7 +105,7 @@
       - RHEL-07-020710
       - RHEL-07-020720
       - RHEL-07-020730
-      - complexity-high
+
 
 - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
   ansible.builtin.set_fact:
@@ -118,7 +117,6 @@
       - RHEL-07-020710
       - RHEL-07-020720
       - RHEL-07-020730
-      - complexity-high
 
 - name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | AUDIT | Find ini files for interactive users."
   ansible.builtin.shell: find "{{ item }}" -maxdepth 1 -type f | awk -F"/" '$NF ~ /^\..*$/ {print $NF}' | grep -v history
@@ -136,7 +134,6 @@
       - RHEL-07-020710
       - RHEL-07-020720
       - RHEL-07-020730
-      - complexity-high
 
 - name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
   ansible.builtin.set_fact:
@@ -151,7 +148,6 @@
       - RHEL-07-020710
       - RHEL-07-020720
       - RHEL-07-020730
-      - complexity-high
 
 - name: "PRELIM | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
@@ -159,12 +155,7 @@
   failed_when: false
   check_mode: false
   register: rhel7stig_sudoers_files
-  when:
-      - rhel_07_010340 or
-        rhel_07_010350
   tags:
-      - cat2
-      - medium
       - RHEL-07-010340
       - RHEL-07-010350
 
@@ -181,8 +172,6 @@
         rhel_07_010491 or
         rhel_07_021350
   tags:
-      - cat1
-      - high
       - RHEL-07-010481
       - RHEL-07-010482
       - RHEL-07-010483
@@ -201,10 +190,6 @@
         rhel_07_021350 or
         rhel_07_021700
   tags:
-      - cat1
-      - high
-      - cat2
-      - medium
       - RHEL-07-010481
       - RHEL-07-010482
       - RHEL-07-010483
@@ -242,8 +227,6 @@
         rhel_07_020040 or
         false
   tags:
-      - cat2
-      - medium
       - RHEL-07-020030
       - RHEL-07-020040
 
@@ -251,7 +234,7 @@
   ansible.builtin.include_tasks:
       file: parse_etc_passwd.yml
   vars:
-      rhel7stig_passwd_tasks: "RHEL-07-020620 RHEL-07-020630 RHEL-07-020640 RHEL-07-020650 RHEL-07-020660 RHEL-07-020690"  # pragma: allowlist secret
+      rhel7stig_passwd_tasks: "RHEL-07-020620 RHEL-07-020630 RHEL-07-020640 RHEL-07-020650 RHEL-07-020660 RHEL-07-020690"
   when:
       - rhel_07_020620 or
         rhel_07_020630 or
@@ -264,8 +247,6 @@
         rhel_07_020700 or
         false
   tags:
-      - cat2
-      - medium
       - RHEL-07-020600
       - RHEL-07-020620
       - RHEL-07-020630
@@ -288,8 +269,6 @@
         rhel_07_031000 or
         rhel_07_031010
   tags:
-      - cat2
-      - medium
       - RHEL-07-021100
       - RHEL-07-031000
       - RHEL-07-031010
@@ -306,8 +285,6 @@
         rhel_07_030320 or
         rhel_07_030321
   tags:
-      - cat2
-      - medium
       - auditd
       - RHEL-07-030300
       - RHEL-07-030310
@@ -330,8 +307,6 @@
   when:
       - rhel_07_030330
   tags:
-      - cat2
-      - medium
       - auditd
       - RHEL-07-030330
 
@@ -359,8 +334,6 @@
         rhel_07_021610 or
         rhel_07_021620
   tags:
-      - cat2
-      - medium
       - patch
       - aide
       - RHEL-07-020030
@@ -407,15 +380,12 @@
         ansible.builtin.shell: ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key -t rsa -b 4096
         notify: clean up ssh host key
         when: not rhel7stig_ssh_host_rsa_key_stat.stat.exists
-  when:
-      - rhel7stig_ssh_required
 
 - name: "PRELIM | Check whether machine is UEFI-based"
   ansible.builtin.stat:
       path: /sys/firmware/efi
   register: rhel7_efi_boot
   tags:
-      - goss_template
       - always
 
 - name: set bootloader type
@@ -427,7 +397,6 @@
             rhel7stig_legacy_boot: false
         when:
             - rhel7_efi_boot.stat.exists
-            - ansible_distribution != 'CentOS'  # Note: rhel & OEL both use redhat path
 
       - name: "PRELIM | set fact if UEFI boot | CentOS "
         ansible.builtin.set_fact:
@@ -436,7 +405,6 @@
             rhel7stig_legacy_boot: false
         when:
             - rhel7_efi_boot.stat.exists
-            - ansible_distribution == 'CentOS'
 
       - name: "PRELIM | set if not UEFI boot"
         ansible.builtin.set_fact:
