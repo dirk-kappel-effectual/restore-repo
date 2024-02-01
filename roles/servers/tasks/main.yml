@@ -1,9 +1,5 @@
 ---
 
-- name: Ansible playbook to retrieve environment variables on linux servers.
-  debug:
-    msg: "{{ lookup('ansible.builtin.env', 'HCP_BUCKET_NAME') }}"
-
 - name: Install AWS Cloudwatch Agent
   tags: build-servers
   block:
@@ -20,7 +16,7 @@
 
     - name: Copy CloudWatch Agent Configuration file
       ansible.builtin.copy:
-        src: "./files/{{ REPO_NAME }}/cw_config.json"
+        src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/cw_config.json"
         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
         owner: root
         group: root
@@ -30,7 +26,7 @@
 - name: Copy fstab file to /etc/fstab.tmp
   tags: build-servers
   ansible.builtin.copy:
-    src: "./files//{{ REPO_NAME }}/fstab"
+    src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/fstab"
     dest: /etc/fstab.tmp
     owner: root
     group: root
