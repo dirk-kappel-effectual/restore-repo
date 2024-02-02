@@ -43,57 +43,33 @@
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
 
-- name: "PRELIM | dconf"
-  block:
-      - name: "PRELIM | Check for dconf availability"
-        ansible.builtin.shell: rpm -q dconf
-        changed_when: false
-        failed_when: rhel7stig_dconf_audit.rc >= 2
-        check_mode: false
-        register: rhel7stig_dconf_audit
+# - name: "PRELIM | dconf"
+#   block:
+#       - name: "PRELIM | Check for dconf availability"
+#         ansible.builtin.shell: rpm -q dconf
+#         changed_when: false
+#         failed_when: rhel7stig_dconf_audit.rc >= 2
+#         check_mode: false
+#         register: rhel7stig_dconf_audit
 
-      - name: "PRELIM | Install dconf"
-        ansible.builtin.package:
-            name: dconf
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when:
-            - rhel7stig_dconf_audit.rc == 1
+#       - name: "PRELIM | Install dconf"
+#         ansible.builtin.package:
+#             name: dconf
+#             state: present
+#         vars:
+#             ansible_python_interpreter: "{{ python2_bin }}"
+#         when:
+#             - rhel7stig_dconf_audit.rc == 1
  
-      - name: dconf directory structure
-        ansible.builtin.file:
-            path: /etc/dconf/db/local.d/locks
-            state: directory
-            mode: '0755'
-        when:
-            - rhel7stig_always_configure_dconf
-  when:
-      - rhel_07_010030 or
-        rhel_07_010040 or
-        rhel_07_010060 or
-        rhel_07_010061 or
-        rhel_07_010062 or
-        rhel_07_010070 or
-        rhel_07_010081 or
-        rhel_07_010082 or
-        rhel_07_010100 or
-        rhel_07_010101 or
-        rhel_07_010110 or
-        rhel_07_020230
-  tags:
-      - RHEL-07-010030
-      - RHEL-07-010040
-      - RHEL-07-010060
-      - RHEL-07-010061
-      - RHEL-07-010062
-      - RHEL-07-010070
-      - RHEL-07-010081
-      - RHEL-07-010082
-      - RHEL-07-010100
-      - RHEL-07-010101
-      - RHEL-07-010110
-      - RHEL-07-020230
+#       - name: dconf directory structure
+#         ansible.builtin.file:
+#             path: /etc/dconf/db/local.d/locks
+#             state: directory
+#             mode: '0755'
+#         when:
+#             - rhel7stig_always_configure_dconf
+#   tags:
+#       - dconf
 
 - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Gather local interactive user directories"
   ansible.builtin.shell: "getent passwd {1000..65535} | cut -d: -f6 | sort -u | grep -v '/var/' | grep -v '/nonexistent/*' | grep -v '/run/*'"
@@ -127,9 +103,6 @@
       - "{{ rhel_07_stig_interactive_homedir_results }}"
   when:
       - rhel_07_stig_interactive_homedir_results is defined
-      - rhel_07_020710
-      - rhel_07_020720
-      - rhel_07_020730
   tags:
       - RHEL-07-020710
       - RHEL-07-020720
@@ -140,9 +113,6 @@
       rhel_07_stig_interactive_homedir_inifiles: "{{ rhel_07_020710_ini_file_list.results | map(attribute='stdout_lines') | list }}"
   when:
       - rhel_07_stig_interactive_homedir_results is defined
-      - rhel_07_020710
-      - rhel_07_020720
-      - rhel_07_020730
   tags:
       - RHEL-07-020680
       - RHEL-07-020710
@@ -165,12 +135,6 @@
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
-  when:
-      - rhel_07_010481 or
-        rhel_07_010482 or
-        rhel_07_010483 or
-        rhel_07_010491 or
-        rhel_07_021350
   tags:
       - RHEL-07-010481
       - RHEL-07-010482
@@ -182,13 +146,6 @@
   ansible.builtin.stat:
       path: /sys/firmware/efi
   register: rhel_07_sys_firmware_efi
-  when:
-      - rhel_07_010481 or
-        rhel_07_010482 or
-        rhel_07_010483 or
-        rhel_07_010491 or
-        rhel_07_021350 or
-        rhel_07_021700
   tags:
       - RHEL-07-010481
       - RHEL-07-010482
@@ -197,15 +154,15 @@
       - RHEL-07-021350
       - RHEL-07-021700
 
-- name: "PRELIM | Gather chroot status"
-  ansible.builtin.setup:
-      gather_subset: chroot,!all,!min
-      filter: ansible_is_chroot
-  when:
-      - ansible_version.string is version_compare('2.7', '>=')
-      - ansible_is_chroot is not defined
-  tags:
-      - always
+# - name: "PRELIM | Gather chroot status"
+#   ansible.builtin.setup:
+#       gather_subset: chroot,!all,!min
+#       filter: ansible_is_chroot
+#   when:
+#       - ansible_version.string is version_compare('2.7', '>=')
+#       - ansible_is_chroot is not defined
+#   tags:
+#       - always
 
 - name: "PRELIM | Gather mount information"
   ansible.builtin.setup:
@@ -222,10 +179,6 @@
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
-  when:
-      - rhel_07_020030 or
-        rhel_07_020040 or
-        false
   tags:
       - RHEL-07-020030
       - RHEL-07-020040
@@ -235,17 +188,6 @@
       file: parse_etc_passwd.yml
   vars:
       rhel7stig_passwd_tasks: "RHEL-07-020620 RHEL-07-020630 RHEL-07-020640 RHEL-07-020650 RHEL-07-020660 RHEL-07-020690"
-  when:
-      - rhel_07_020620 or
-        rhel_07_020630 or
-        rhel_07_020640 or
-        rhel_07_020650 or
-        rhel_07_020660 or
-        rhel_07_020670 or
-        rhel_07_020680 or
-        rhel_07_020690 or
-        rhel_07_020700 or
-        false
   tags:
       - RHEL-07-020600
       - RHEL-07-020620
@@ -264,10 +206,6 @@
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
-  when:
-      - rhel_07_021100 or
-        rhel_07_031000 or
-        rhel_07_031010
   tags:
       - RHEL-07-021100
       - RHEL-07-031000
@@ -279,11 +217,6 @@
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
-  when:
-      - rhel_07_030300 or
-        rhel_07_030310 or
-        rhel_07_030320 or
-        rhel_07_030321
   tags:
       - auditd
       - RHEL-07-030300
@@ -304,8 +237,6 @@
         changed_when: false
         check_mode: false
         register: rhel_07_audit_part
-  when:
-      - rhel_07_030330
   tags:
       - auditd
       - RHEL-07-030330
@@ -327,12 +258,6 @@
         check_mode: false
         register: rhel7stig_aide_db_status
         notify: "{{ rhel7stig_aide_handler }}"
-  when:
-      - rhel_07_020030 or
-        rhel_07_020040 or
-        rhel_07_021600 or
-        rhel_07_021610 or
-        rhel_07_021620
   tags:
       - patch
       - aide
@@ -351,10 +276,8 @@
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
-  when:
-      - rhel_07_020210 or
-        rhel_07_020220 or
-        rhel_07_020020
+  tags:
+      - SELinux
 
 - name: "PRELIM | Bare bones SSH Server"
   block:
@@ -371,15 +294,15 @@
             state: started
             enabled: true
 
-      - name: PRELIM | check if ssh host key exists
-        ansible.builtin.stat:
-            path: /etc/ssh/ssh_host_rsa_key
-        register: rhel7stig_ssh_host_rsa_key_stat
+      # - name: PRELIM | check if ssh host key exists
+      #   ansible.builtin.stat:
+      #       path: /etc/ssh/ssh_host_rsa_key
+      #   register: rhel7stig_ssh_host_rsa_key_stat
 
-      - name: PRELIM | create ssh host key to allow 'sshd -t -f %s' to succeed
-        ansible.builtin.shell: ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key -t rsa -b 4096
-        notify: clean up ssh host key
-        when: not rhel7stig_ssh_host_rsa_key_stat.stat.exists
+      # - name: PRELIM | create ssh host key to allow 'sshd -t -f %s' to succeed
+      #   ansible.builtin.shell: ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key -t rsa -b 4096
+      #   notify: clean up ssh host key
+      #   when: not rhel7stig_ssh_host_rsa_key_stat.stat.exists
 
 - name: "PRELIM | Check whether machine is UEFI-based"
   ansible.builtin.stat:
@@ -398,13 +321,13 @@
         when:
             - rhel7_efi_boot.stat.exists
 
-      - name: "PRELIM | set fact if UEFI boot | CentOS "
-        ansible.builtin.set_fact:
-            rhel7stig_bootloader_path: "{{ rhel7stig_efi_boot_path }}centos"
-            rhel7stig_not_boot_path: "{{ rhel7stig_legacy_boot_path }}"
-            rhel7stig_legacy_boot: false
-        when:
-            - rhel7_efi_boot.stat.exists
+      # - name: "PRELIM | set fact if UEFI boot | CentOS "
+      #   ansible.builtin.set_fact:
+      #       rhel7stig_bootloader_path: "{{ rhel7stig_efi_boot_path }}centos"
+      #       rhel7stig_not_boot_path: "{{ rhel7stig_legacy_boot_path }}"
+      #       rhel7stig_legacy_boot: false
+      #   when:
+      #       - rhel7_efi_boot.stat.exists
 
       - name: "PRELIM | set if not UEFI boot"
         ansible.builtin.set_fact:

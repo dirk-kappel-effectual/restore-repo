@@ -1207,22 +1207,22 @@
       - RHEL-07-020110
       - mount
 
-- name: "MEDIUM | RHEL-07-020111 | PATCH | The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required."
-  ansible.builtin.copy:
-      dest: /etc/dconf/db/local.d/00-No-Automount
-      content: |
-        [org/gnome/desktop/media-handling]
-        automount=false
-        automount-open=false
-        automount-never=true
-      mode: '0644'
-  notify: dconf update
-  when:
-      - rhel7stig_dconf_available
-      - rhel_07_020111
-  tags:
-      - RHEL-07-020111
-      - dconf
+# - name: "MEDIUM | RHEL-07-020111 | PATCH | The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required."
+#   ansible.builtin.copy:
+#       dest: /etc/dconf/db/local.d/00-No-Automount
+#       content: |
+#         [org/gnome/desktop/media-handling]
+#         automount=false
+#         automount-open=false
+#         automount-never=true
+#       mode: '0644'
+#   notify: dconf update
+#   when:
+#       - rhel7stig_dconf_available
+#       - rhel_07_020111
+#   tags:
+#       - RHEL-07-020111
+#       - dconf
 
 - name: |
     "MEDIUM | RHEL-07-020210 | PATCH | The Red Hat Enterprise Linux operating system must enable SELinux."

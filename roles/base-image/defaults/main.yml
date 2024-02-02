@@ -335,7 +335,7 @@ rhel7stig_gui: false
 
 # Whether to configure dconf rules unconditionally (ignoring presence of dconf
 # or rhel7stig_gui)
-rhel7stig_always_configure_dconf: false
+# rhel7stig_always_configure_dconf: false
 
 # Whether or not to run tasks related to smart card authentication enforcement
 rhel7stig_smartcard: false

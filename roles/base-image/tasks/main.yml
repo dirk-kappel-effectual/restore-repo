@@ -1,11 +1,11 @@
 ---
-- name: Gather distribution info
-  ansible.builtin.setup:
-      gather_subset: distribution,!all,!min
-  when:
-      - ansible_distribution is not defined
-  tags:
-      - always
+# - name: Gather distribution info
+#   ansible.builtin.setup:
+#       gather_subset: distribution,!all,!min
+#   when:
+#       - ansible_distribution is not defined
+#   tags:
+#       - always
 
 - name: Check OS version and family
   ansible.builtin.assert:
@@ -46,25 +46,23 @@
 - name: FIPS turned on
   ansible.builtin.set_fact:
       fips_value: '1'
-  when:
-      - rhel7stig_use_fips
   tags:
       - RHEL-07-021350
 
-- name: Check rhel7stig_bootloader_password_hash variable has been changed
-  ansible.builtin.assert:
-      that: rhel7stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  
-      msg: "This role will not be able to run single user password commands as rhel7stig_bootloader_password_hash variable has not been set. You can create the hash on a RHEL 7.9 system using the command 'grub2-mkpasswd-pbkdf2'"  
-  when:
-      - rhel_07_010481 or
-        rhel_07_010482 or
-        rhel_07_010483 or
-        rhel_07_010491
-  tags:
-      - RHEL-07-010481
-      - RHEL-07-010482
-      - RHEL-07-010483
-      - RHEL-07-010491
+# - name: Check rhel7stig_bootloader_password_hash variable has been changed
+#   ansible.builtin.assert:
+#       that: rhel7stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  
+#       msg: "This role will not be able to run single user password commands as rhel7stig_bootloader_password_hash variable has not been set. You can create the hash on a RHEL 7.9 system using the command 'grub2-mkpasswd-pbkdf2'"  
+#   when:
+#       - rhel_07_010481 or
+#         rhel_07_010482 or
+#         rhel_07_010483 or
+#         rhel_07_010491
+#   tags:
+#       - RHEL-07-010481
+#       - RHEL-07-010482
+#       - RHEL-07-010483
+#       - RHEL-07-010491
 
 - name: Include OS specific variables
   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"

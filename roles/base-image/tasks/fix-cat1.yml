@@ -36,17 +36,17 @@
 - name: "HIGH | RHEL-07-010020 | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
   block:
       - name: "HIGH | RHEL-07-010020 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
-        ansible.builtin.shell: 'rpm -Va --noconfig --nolinkto --nosize --nouser --nogroup --nomtime --nomode --nodigest --nosignature | grep ''^..5'' | tee /dev/stderr | cut -c13- | sed ''s/^ //'' | xargs rpm -qf --qf=''%{name}\n'' | sort -u'
+        ansible.builtin.shell: 'rpm -Va --noconfig | grep '^..5' | cut -c13- | sed 's/^ //' | xargs rpm -qf --qf='%{name}\n' | sort -u'
         check_mode: false
         failed_when: false
         changed_when: rhel_07_010020_audit.stdout| length > 0
         register: rhel_07_010020_audit
 
-      - name: "HIGH | RHEL-07-010020 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
-        ansible.builtin.debug:
-            msg: "{{ rhel_07_010020_audit.stderr_lines }}"
-        changed_when: true
-        when: rhel_07_010020_audit.stdout | length > 0
+    #   - name: "HIGH | RHEL-07-010020 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
+    #     ansible.builtin.debug:
+    #         msg: "{{ rhel_07_010020_audit.stderr_lines }}"
+    #     changed_when: true
+    #     when: rhel_07_010020_audit.stdout | length > 0
 
       - name: "HIGH | RHEL-07-010020 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
         ansible.builtin.shell: yum reinstall -y {{ item }}
@@ -261,18 +261,17 @@
         - Current version of {{ ansible_distribution }} is {{ cat_release.stdout }}
   tags:
       - RHEL-07-020250
-      - complexity-high
 
 - name: "HIGH | RHEL-07-020310 | The Red Hat Enterprise Linux operating system must be configured so that the root account must be the only account having unrestricted access to the system."
   block:
-      # Currently just locks user account
       - name: "HIGH | RHEL-07-020310 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that the root account must be the only account having unrestricted access to the system."
         ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
         check_mode: false
         changed_when: false
         failed_when: false
         register: rhel_07_020310_audit
-
+      
+      # This will lock any accounts, other than root, that are found to have unrestricted access to the system.
       - name: "HIGH | RHEL-07-020310 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the root account must be the only account having unrestricted access to the system."
         ansible.builtin.shell: "passwd -l {{ item }}"
         with_items: "{{ rhel_07_020310_audit.stdout_lines }}"

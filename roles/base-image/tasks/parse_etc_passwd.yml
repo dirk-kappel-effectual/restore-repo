@@ -1,4 +1,5 @@
 ---
+
 - name: "PRELIM | {{ rhel7stig_passwd_tasks }} | Parse /etc/passwd"
   block:
       - name: "PRELIM | {{ rhel7stig_passwd_tasks }} | Parse /etc/passwd"
