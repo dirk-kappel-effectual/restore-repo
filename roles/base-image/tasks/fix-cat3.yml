@@ -7,7 +7,7 @@
       state: present
       reload: true
       sysctl_set: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-010375
       - sysctl

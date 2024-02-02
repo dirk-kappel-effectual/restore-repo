@@ -2783,7 +2783,7 @@
       state: present
       reload: true
       sysctl_set: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040201
       - sysctl
@@ -3126,7 +3126,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040610
       - ipv4
@@ -3159,7 +3159,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040620
       - ipv4
@@ -3171,7 +3171,7 @@
       value: '1'
       sysctl_set: true
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040630
       - ipv4
@@ -3182,7 +3182,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040640
       - ipv4
@@ -3193,7 +3193,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040641
       - ipv4
@@ -3204,7 +3204,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040650
       - ipv4
@@ -3215,7 +3215,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040660
       - ipv4
@@ -3316,7 +3316,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040740
       - ipv4
@@ -3393,7 +3393,7 @@
       state: present
       value: '0'
       reload: true
-      ignore_errors: true
+      ignoreerrors: true
   tags:
       - RHEL-07-040830
       - ipv6
