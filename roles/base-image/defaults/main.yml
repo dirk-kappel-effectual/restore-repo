@@ -363,7 +363,7 @@ rhel7stig_change_user_path: false
 
 # RHEL-07-020730
 # Do we change world-writable executable programs to mode 0755?
-rhel_07_020730_wwp_change: true
+# rhel_07_020730_wwp_change: true
 
 # RHEL-07-020250
 # This is a check for a "supported release"
