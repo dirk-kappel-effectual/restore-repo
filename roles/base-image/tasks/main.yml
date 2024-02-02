@@ -83,35 +83,29 @@
   tags:
       - always
 
-# - name: Install OLDCC requirements
-#   ansible.builtin.import_tasks:
-#       file: oldcc-base.yml
-#   tags:
-#       - oldcc-base
+- name: Install OLDCC requirements
+  ansible.builtin.import_tasks:
+      file: oldcc-base.yml
+  tags:
+      - oldcc-base
 
-# - name: Include CAT I patches
-#   ansible.builtin.import_tasks:
-#       file: fix-cat1.yml
-#   when: rhel7stig_cat1_patch
-#   tags:
-#       - cat1
-#       - high
+- name: Include CAT I patches
+  ansible.builtin.import_tasks:
+      file: fix-cat1.yml
+  tags:
+      - high
 
-# - name: Include CAT II patches
-#   ansible.builtin.import_tasks:
-#       file: fix-cat2.yml
-#   when: rhel7stig_cat2_patch
-#   tags:
-#       - cat2
-#       - medium
+- name: Include CAT II patches
+  ansible.builtin.import_tasks:
+      file: fix-cat2.yml
+  tags:
+      - medium
 
-# - name: Include CAT III patches
-#   ansible.builtin.import_tasks:
-#       file: fix-cat3.yml
-#   when: rhel7stig_cat3_patch
-#   tags:
-#       - cat3
-#       - low
+- name: Include CAT III patches
+  ansible.builtin.import_tasks:
+      file: fix-cat3.yml
+  tags:
+      - low
 
 # - name: update auditd
 #   ansible.builtin.template:
@@ -127,8 +121,3 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
-
-# - name: Reboot system
-#   ansible.builtin.reboot:
-#   when:
-#       - not rhel7stig_skip_reboot
