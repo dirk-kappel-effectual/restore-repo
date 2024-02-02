@@ -95,59 +95,59 @@
       - RHEL-07-010110
       - RHEL-07-020230
 
-# - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Gather local interactive user directories"
-#   ansible.builtin.shell: "getent passwd {1000..65535} | cut -d: -f6 | sort -u | grep -v '/var/' | grep -v '/nonexistent/*' | grep -v '/run/*'"
-#   changed_when: false
-#   failed_when: false
-#   register: rhel_07_020680_getent
-#   tags:
-#       - RHEL-07-020680
-#       - RHEL-07-020710
-#       - RHEL-07-020720
-#       - RHEL-07-020730
+- name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Gather local interactive user directories"
+  ansible.builtin.shell: "getent passwd {1000..65535} | cut -d: -f6 | sort -u | grep -v '/var/' | grep -v '/nonexistent/*' | grep -v '/run/*'"
+  changed_when: false
+  failed_when: false
+  register: rhel_07_020680_getent
+  tags:
+      - RHEL-07-020680
+      - RHEL-07-020710
+      - RHEL-07-020720
+      - RHEL-07-020730
 
 
-# - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
-#   ansible.builtin.set_fact:
-#       rhel_07_stig_interactive_homedir_results: "{{ rhel_07_020680_getent.stdout_lines }}"
-#   when:
-#       - rhel_07_020680_getent.stdout_lines is defined
-#   tags:
-#       - RHEL-07-020680
-#       - RHEL-07-020710
-#       - RHEL-07-020720
-#       - RHEL-07-020730
+- name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
+  ansible.builtin.set_fact:
+      rhel_07_stig_interactive_homedir_results: "{{ rhel_07_020680_getent.stdout_lines }}"
+  when:
+      - rhel_07_020680_getent.stdout_lines is defined
+  tags:
+      - RHEL-07-020680
+      - RHEL-07-020710
+      - RHEL-07-020720
+      - RHEL-07-020730
 
-# - name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | AUDIT | Find ini files for interactive users."
-#   ansible.builtin.shell: find "{{ item }}" -maxdepth 1 -type f | awk -F"/" '$NF ~ /^\..*$/ {print $NF}' | grep -v history
-#   changed_when: false
-#   failed_when: false
-#   register: rhel_07_020710_ini_file_list
-#   with_items:
-#       - "{{ rhel_07_stig_interactive_homedir_results }}"
-#   when:
-#       - rhel_07_stig_interactive_homedir_results is defined
-#       - rhel_07_020710
-#       - rhel_07_020720
-#       - rhel_07_020730
-#   tags:
-#       - RHEL-07-020710
-#       - RHEL-07-020720
-#       - RHEL-07-020730
+- name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | AUDIT | Find ini files for interactive users."
+  ansible.builtin.shell: find "{{ item }}" -maxdepth 1 -type f | awk -F"/" '$NF ~ /^\..*$/ {print $NF}' | grep -v history
+  changed_when: false
+  failed_when: false
+  register: rhel_07_020710_ini_file_list
+  with_items:
+      - "{{ rhel_07_stig_interactive_homedir_results }}"
+  when:
+      - rhel_07_stig_interactive_homedir_results is defined
+      - rhel_07_020710
+      - rhel_07_020720
+      - rhel_07_020730
+  tags:
+      - RHEL-07-020710
+      - RHEL-07-020720
+      - RHEL-07-020730
 
-# - name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
-#   ansible.builtin.set_fact:
-#       rhel_07_stig_interactive_homedir_inifiles: "{{ rhel_07_020710_ini_file_list.results | map(attribute='stdout_lines') | list }}"
-#   when:
-#       - rhel_07_stig_interactive_homedir_results is defined
-#       - rhel_07_020710
-#       - rhel_07_020720
-#       - rhel_07_020730
-#   tags:
-#       - RHEL-07-020680
-#       - RHEL-07-020710
-#       - RHEL-07-020720
-#       - RHEL-07-020730
+- name: "PRELIM | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
+  ansible.builtin.set_fact:
+      rhel_07_stig_interactive_homedir_inifiles: "{{ rhel_07_020710_ini_file_list.results | map(attribute='stdout_lines') | list }}"
+  when:
+      - rhel_07_stig_interactive_homedir_results is defined
+      - rhel_07_020710
+      - rhel_07_020720
+      - rhel_07_020730
+  tags:
+      - RHEL-07-020680
+      - RHEL-07-020710
+      - RHEL-07-020720
+      - RHEL-07-020730
 
 - name: "PRELIM | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"

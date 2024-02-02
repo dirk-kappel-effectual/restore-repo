@@ -1585,7 +1585,7 @@
         with_items: "{{ rhel_07_020700_audit.results }}"
         loop_control:
             label: "{{ rhel7stig_passwd_label }}"
-        when: item is changed  # noqa: no-handler
+        when: item is changed
         vars:
             this_item: "{{ item.item }}"
   vars:
