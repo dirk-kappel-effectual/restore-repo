@@ -477,7 +477,7 @@
       regexp: ^#?PASS_MIN_DAYS
       line: "PASS_MIN_DAYS {{ rhel7stig_login_defaults.pass_min_days | default('1') }}"
       mode: 0644
-   tags:
+  tags:
       - RHEL-07-010230
       - login
 
