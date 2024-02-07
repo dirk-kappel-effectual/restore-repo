@@ -36,7 +36,7 @@
 - name: "HIGH | RHEL-07-010020 | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
   block:
       - name: "HIGH | RHEL-07-010020 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values."
-        ansible.builtin.shell: 'rpm -Va --noconfig | grep '^..5' | cut -c13- | sed 's/^ //' | xargs rpm -qf --qf='%{name}\n' | sort -u'
+        ansible.builtin.shell: 'rpm -Va --noconfig | grep ''^..5'' | cut -c13- | sed ''s/^ //'' | xargs rpm -qf --qf=''%{name}\n'' | sort -u'
         check_mode: false
         failed_when: false
         changed_when: rhel_07_010020_audit.stdout| length > 0
