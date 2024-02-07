@@ -56,7 +56,7 @@
 
 - name: "MEDIUM | RHEL-07-010050 | PATCH | The Red Hat Enterprise Linux operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a command line user logon."
   ansible.builtin.copy:
-      content: "{{ rhel7stig_logon_banner }}"  # noqa: template-instead-of-copy
+      content: "{{ rhel7stig_logon_banner }}"
       dest: "{{ item }}"
       owner: root
       group: root
@@ -320,7 +320,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*ucredit'
-      line: "ucredit = {{ rhel7stig_password_complexity.ucredit | default('-1') }}"
+      line: "ucredit = -1"
       mode: 0644
   tags:
       - RHEL-07-010120
@@ -331,7 +331,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*lcredit'
-      line: "lcredit = {{ rhel7stig_password_complexity.lcredit | default('-1') }}"
+      line: "lcredit = -1"
       mode: 0644
   tags:
       - RHEL-07-010130
@@ -342,7 +342,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*dcredit'
-      line: "dcredit = {{ rhel7stig_password_complexity.dcredit | default('-1') }}"
+      line: "dcredit = -1"
       mode: 0644
   tags:
       - RHEL-07-010140
@@ -353,7 +353,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*ocredit'
-      line: "ocredit = {{ rhel7stig_password_complexity.ocredit | default('-1') }}"
+      line: "ocredit = -1"
       mode: 0644
   tags:
       - RHEL-07-010150
@@ -364,7 +364,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*difok'
-      line: "difok = {{ rhel7stig_password_complexity.difok | default('8') }}"
+      line: "difok = 8"
       mode: 0644
   tags:
       - RHEL-07-010160
@@ -375,7 +375,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*minclass'
-      line: "minclass = {{ rhel7stig_password_complexity.minclass | default('4') }}"
+      line: "minclass = 4"
       mode: 0644
   tags:
       - RHEL-07-010170
@@ -386,7 +386,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*maxrepeat'
-      line: "maxrepeat = {{ rhel7stig_password_complexity.maxrepeat | default('3') }}"
+      line: "maxrepeat = 3"
       mode: 0644
   tags:
       - RHEL-07-010180
@@ -397,7 +397,7 @@
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*maxclassrepeat'
-      line: "maxclassrepeat = {{ rhel7stig_password_complexity.maxclassrepeat | default('4') }}"
+      line: "maxclassrepeat = 4"
       mode: 0644
   tags:
       - RHEL-07-010190
@@ -456,7 +456,7 @@
   ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: ^#?ENCRYPT_METHOD
-      line: "ENCRYPT_METHOD {{ rhel7stig_login_defaults.encrypt_method | default('SHA512') }}"
+      line: "ENCRYPT_METHOD SHA512"
   tags:
       - RHEL-07-010210
       - login
@@ -475,7 +475,7 @@
       create: true
       dest: /etc/login.defs
       regexp: ^#?PASS_MIN_DAYS
-      line: "PASS_MIN_DAYS {{ rhel7stig_login_defaults.pass_min_days | default('1') }}"
+      line: "PASS_MIN_DAYS 1"
       mode: 0644
   tags:
       - RHEL-07-010230
@@ -504,7 +504,7 @@
       create: true
       dest: /etc/login.defs
       regexp: ^#?PASS_MAX_DAYS
-      line: "PASS_MAX_DAYS {{ rhel7stig_login_defaults.pass_max_days | default('60') }}"
+      line: "PASS_MAX_DAYS 60"
       mode: 0644
   tags:
       - RHEL-07-010250
@@ -520,13 +520,13 @@
 
       - name: "MEDIUM | RHEL-07-010260 | PATCH | Reset password timeout to prevent locking out user."
         ansible.builtin.shell: chage -d '-1 day' {{ item }}
-        check_mode: "{{ rhel7stig_disruptive_check_mode }}"
+        # check_mode: "{{ rhel7stig_disruptive_check_mode }}"
         with_items:
             - "{{ rhel_07_010260_audit.stdout_lines }}"
 
       - name: "MEDIUM | RHEL-07-010260 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime."
         ansible.builtin.shell: "chage -M 60 {{ item }}"
-        check_mode: "{{ rhel7stig_disruptive_check_mode }}"
+        # check_mode: "{{ rhel7stig_disruptive_check_mode }}"
         with_items:
             - "{{ rhel_07_010260_audit.stdout_lines }}"
   tags:
@@ -572,19 +572,19 @@
 #       - V-204422
 #       - pamd
 
-- name: "MEDIUM | AUDIT | RHEL-07-010271 | The Red Hat Enterprise Linux operating system must automatically expire temporary accounts within 72 hours."
-  ansible.builtin.debug:
-      msg:
-          - "Warning!! Verify every existing emergency account and make sure it has an expiration date set within 72 hours."
-  tags:
-      - RHEL-07-010271
+# - name: "MEDIUM | AUDIT | RHEL-07-010271 | The Red Hat Enterprise Linux operating system must automatically expire temporary accounts within 72 hours."
+#   ansible.builtin.debug:
+#       msg:
+#           - "Warning!! Verify every existing emergency account and make sure it has an expiration date set within 72 hours."
+#   tags:
+#       - RHEL-07-010271
 
 - name: "MEDIUM | RHEL-07-010280 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords are a minimum of 15 characters in length."
   ansible.builtin.lineinfile:
       create: true
       dest: /etc/security/pwquality.conf
       regexp: '^#?\s*minlen'
-      line: "minlen = {{ rhel7stig_password_complexity.minlen | default('15') }}"
+      line: "minlen = 15"
       mode: 0644
   tags:
       - RHEL-07-010280
@@ -716,7 +716,7 @@
       - name: "MEDIUM | RHEL-07-010341 | PATCH | The Red Hat Enterprise Linux operating system must restrict privilege elevation to authorized personnel. | Remove format 1"
         ansible.builtin.lineinfile:
             path: "{{ item }}"
-            regexp: 'ALL ALL=(ALL) ALL'
+            regexp: 'ALL\s+ALL=(ALL)\s+ALL'
             state: absent
             validate: '/usr/sbin/visudo -cf %s'
         with_items:
@@ -803,7 +803,7 @@
         ansible.builtin.lineinfile:
             path: /etc/sudoers
             regexp: 'Defaults timestamp_timeout='
-            line: "Defaults timestamp_timeout={{ rhel7stig_sudo_timestamp_timeout }}"
+            line: "Defaults timestamp_timeout=1"
             validate: '/usr/sbin/visudo -cf %s'
         when: rhel_07_010343_timeout_files.stdout | length == 0
 
@@ -811,7 +811,7 @@
         ansible.builtin.lineinfile:
             path: "{{ item }}"
             regexp: 'Defaults timestamp_timeout='
-            line: "Defaults timestamp_timeout={{ rhel7stig_sudo_timestamp_timeout }}"
+            line: "Defaults timestamp_timeout=1"
             validate: '/usr/sbin/visudo -cf %s'
         with_items:
             - "{{ rhel_07_010343_timeout_files.stdout_lines }}"
@@ -843,7 +843,7 @@
   ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: ^#?FAIL_DELAY
-      line: "FAIL_DELAY {{ rhel7stig_login_defaults.fail_delay_secs | default('4') }}"
+      line: "FAIL_DELAY 4"
   tags:
       - RHEL-07-010430
       - login
@@ -1063,7 +1063,7 @@
   ansible.posix.seboolean:
       name: ssh_sysadm_login
       persistent: true
-      state: "{{ rhel7stig_ssh_sysadm_login_state }}"
+      state: false
   tags:
       - RHEL-07-020022
 
@@ -1096,7 +1096,7 @@
   ansible.builtin.package:
       name: mailx
       state: present
-  notify: "{{ rhel7stig_aide_handler }}"
+#   notify: "{{ rhel7stig_aide_handler }}"
   when:
       - "'mailx' not in ansible_facts.packages"
   tags:
@@ -1107,7 +1107,8 @@
   ansible.builtin.package:
       name: aide
       state: present
-  notify: "{{ rhel7stig_aide_handler }}"
+#   notify: "{{ rhel7stig_aide_handler }}"
+  notify: "init aide and wait"
   when:
       - "'aide' not in ansible_facts.packages"
   tags:
@@ -1202,7 +1203,6 @@
             state: stopped
         when:
             - rhel_07_020110_autofs_service_status.stdout == "loaded"
-            - not rhel7stig_autofs_required
   tags:
       - RHEL-07-020110
       - mount
@@ -1230,7 +1230,7 @@
   ansible.posix.selinux:
       state: enforcing
       policy: targeted
-  check_mode: "{{ ansible_check_mode }}"
+#   check_mode: "{{ ansible_check_mode }}"
   tags:
       - RHEL-07-020210
       - selinux
@@ -1239,7 +1239,7 @@
   ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: ^#?UMASK
-      line: "UMASK {{ rhel7stig_login_defaults.umask | default('077') }}"
+      line: "UMASK 077"
   tags:
       - RHEL-07-020240
       - login
@@ -1259,7 +1259,7 @@
   block:
       - name: "MEDIUM | RHEL-07-020270 | AUDIT | The Red Hat Enterprise Linux operating system must not have unnecessary accounts."
         ansible.builtin.shell: "grep '^{{ item }}:' /etc/passwd"
-        check_mode: false
+        # check_mode: false
         failed_when: rhel_07_020270_audit.rc > 1
         changed_when: rhel_07_020270_audit.rc == 0
         register: rhel_07_020270_audit
@@ -1270,7 +1270,7 @@
         ansible.builtin.user:
             name: "{{ item }}"
             state: absent
-            remove: "{{ rhel7stig_remove_unnecessary_user_files }}"
+            # remove: "{{ rhel7stig_remove_unnecessary_user_files }}"
         register: rhel_07_020270_patch
         with_items:
             - "{{ rhel7stig_unnecessary_accounts }}"
@@ -1279,7 +1279,7 @@
         ansible.builtin.include_tasks:
             file: parse_etc_passwd.yml
         vars:
-            rhel7stig_passwd_tasks: "RHEL-07-020270"  # noqa: no-handler  # pragma: allowlist secret
+            rhel7stig_passwd_tasks: "RHEL-07-020270"
         when: rhel_07_020270_patch is changed
   tags:
       - RHEL-07-020270
@@ -1335,7 +1335,7 @@
   ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: ^#?CREATE_HOME
-      line: "CREATE_HOME {{ rhel7stig_login_defaults.create_home | default('yes') }}"
+      line: "CREATE_HOME yes"
   tags:
       - RHEL-07-020610
       - login
@@ -1422,7 +1422,7 @@
         with_items: "{{ rhel_07_020660_audit.results }}"
         loop_control:
             label: "{{ rhel7stig_passwd_label }}"
-        when: item is changed  # noqa: no-handler
+        when: item is changed
         vars:
             this_item: "{{ item.item }}"
   vars:
@@ -1464,7 +1464,7 @@
         with_items: "{{ rhel_07_020670_audit.results }}"
         loop_control:
             label: "{{ rhel7stig_passwd_label }}"
-        when: item is changed  # noqa: no-handler
+        when: item is changed 
         vars:
             this_item: "{{ item.item.item }}"
             this_result: "{{ item.item }}"
@@ -1495,14 +1495,13 @@
         loop_control:
             label: "{{ item.0 }}"
         when:
-            - ansible_check_mode
-            - item.1.exists
+             - item.1.exists
 
       - name: "MEDIUM | RHEL-07-020680 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all files and directories contained in local interactive user home directories have a mode of 0750 or less permissive."
         ansible.builtin.file:
             path: "{{ item.0 }}"
             recurse: true
-            mode: a-st,g-w,o-rwx
+            mode: g-w,o-rwx
         register: rhel_07_020680_patch
         with_together:
             - "{{ rhel_07_020680_audit.results | map(attribute='item') | list }}"
@@ -1510,7 +1509,6 @@
         loop_control:
             label: "{{ item.0 }}"
         when:
-            - not ansible_check_mode
             - item.1.exists
 
       # set default ACLs so the homedir has an effective umask of 0027
@@ -1695,88 +1693,88 @@
   tags:
       - RHEL-07-020900
 
-- name: "MEDIUM | RHEL-07-021000 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that file systems containing user home directories are mounted to prevent files with the setuid and setgid bit set from being executed."
-  ansible.posix.mount:
-      path: /home
-      state: mounted
-      src: "{{ home_mount.device }}"
-      fstype: "{{ home_mount.fstype }}"
-      opts: "{{ home_mount.options }},nosuid"
-  vars:
-      home_mount: "{{ ansible_mounts | json_query('[?mount == `/home`] | [0]') }}"
-  when:
-      - ansible_mounts | selectattr('mount', 'match', '^/home$') | list | length != 0
-      - "'nosuid' not in home_mount.options"
-  tags:
-      - RHEL-07-021000
+# - name: "MEDIUM | RHEL-07-021000 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that file systems containing user home directories are mounted to prevent files with the setuid and setgid bit set from being executed."
+#   ansible.posix.mount:
+#       path: /home
+#       state: mounted
+#       src: "{{ home_mount.device }}"
+#       fstype: "{{ home_mount.fstype }}"
+#       opts: "{{ home_mount.options }},nosuid"
+#   vars:
+#       home_mount: "{{ ansible_mounts | json_query('[?mount == `/home`] | [0]') }}"
+#   when:
+#       - ansible_mounts | selectattr('mount', 'match', '^/home$') | list | length != 0
+#       - "'nosuid' not in home_mount.options"
+#   tags:
+#       - RHEL-07-021000
 
-- name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
-  block:
-      - name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
-        ansible.posix.mount:
-            path: /media
-            state: mounted
-            src: "{{ removable_mount.device }}"
-            fstype: "{{ removable_mount.fstype }}"
-            opts: "{{ removable_mount.options }},nosuid"
-        vars:
-            removable_mount: "{{ ansible_mounts | json_query('[?mount == `/media`] | [0]') }}"
-        when:
-            - ansible_mounts | selectattr('mount', 'match', '^/media$') | list | length != 0
-            - "'nosuid' not in home_mount.options"
+# - name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
+#   block:
+#       - name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
+#         ansible.posix.mount:
+#             path: /media
+#             state: mounted
+#             src: "{{ removable_mount.device }}"
+#             fstype: "{{ removable_mount.fstype }}"
+#             opts: "{{ removable_mount.options }},nosuid"
+#         vars:
+#             removable_mount: "{{ ansible_mounts | json_query('[?mount == `/media`] | [0]') }}"
+#         when:
+#             - ansible_mounts | selectattr('mount', 'match', '^/media$') | list | length != 0
+#             - "'nosuid' not in home_mount.options"
 
-      - name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
-        ansible.posix.mount:
-            path: /mnt
-            state: mounted
-            src: "{{ removable_mount2.device }}"
-            fstype: "{{ removable_mount2.fstype }}"
-            opts: "{{ removable_mount2.options }},nosuid"
-        vars:
-            removable_mount2: "{{ ansible_mounts | json_query('[?mount == `/mnt`] | [0]') }}"
-        when:
-            - ansible_mounts | selectattr('mount', 'match', '^/mnt$') | list | length != 0
-            - "'nosuid' not in home_mount.options"
-  tags:
-      - RHEL-07-021010
+#       - name: "MEDIUM | RHEL-07-021010 | AUDIT | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."
+#         ansible.posix.mount:
+#             path: /mnt
+#             state: mounted
+#             src: "{{ removable_mount2.device }}"
+#             fstype: "{{ removable_mount2.fstype }}"
+#             opts: "{{ removable_mount2.options }},nosuid"
+#         vars:
+#             removable_mount2: "{{ ansible_mounts | json_query('[?mount == `/mnt`] | [0]') }}"
+#         when:
+#             - ansible_mounts | selectattr('mount', 'match', '^/mnt$') | list | length != 0
+#             - "'nosuid' not in home_mount.options"
+#   tags:
+#       - RHEL-07-021010
 
-- name: "MEDIUM | RHEL-07-021020 | PATCH | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are being imported via Network File System (NFS)."
-  ansible.posix.mount:
-      path: "{{ item }}"
-      src: "{{ ansible_mounts | json_query(device_query) }}"
-      fstype: "{{ ansible_mounts | json_query(fstype_query) }}"
-      opts: "{{ ansible_mounts | json_query(options_query) }},nosuid"
-      state: mounted
-  vars:
-      device_query: '[?mount == `{{ item }}`] | [0].device'
-      fstype_query: '[?mount == `{{ item }}`] | [0].fstype'
-      options_query: '[?mount == `{{ item }}`] | [0].options'
-  with_items:
-      - "{{ rhel7stig_nfs_mounts }}"
-  when:
-      - "'nosuid' not in (ansible_mounts | json_query(options_query))"
-  tags:
-      - RHEL-07-021020
-      - mounts
+# - name: "MEDIUM | RHEL-07-021020 | PATCH | The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are being imported via Network File System (NFS)."
+#   ansible.posix.mount:
+#       path: "{{ item }}"
+#       src: "{{ ansible_mounts | json_query(device_query) }}"
+#       fstype: "{{ ansible_mounts | json_query(fstype_query) }}"
+#       opts: "{{ ansible_mounts | json_query(options_query) }},nosuid"
+#       state: mounted
+#   vars:
+#       device_query: '[?mount == `{{ item }}`] | [0].device'
+#       fstype_query: '[?mount == `{{ item }}`] | [0].fstype'
+#       options_query: '[?mount == `{{ item }}`] | [0].options'
+#   with_items:
+#       - "{{ rhel7stig_nfs_mounts }}"
+#   when:
+#       - "'nosuid' not in (ansible_mounts | json_query(options_query))"
+#   tags:
+#       - RHEL-07-021020
+#       - mounts
 
-- name: "MEDIUM | RHEL-07-021021 | PATCH | The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS)."
-  ansible.posix.mount:
-      path: "{{ item }}"
-      src: "{{ ansible_mounts | json_query(device_query) }}"
-      fstype: "{{ ansible_mounts | json_query(fstype_query) }}"
-      opts: "{{ ansible_mounts | json_query(options_query) }},noexec"
-      state: mounted
-  vars:
-      device_query: '[?mount == `{{ item }}`] | [0].device'  # noqa: jinja[invalid]
-      fstype_query: '[?mount == `{{ item }}`] | [0].fstype'  # noqa: jinja[invalid]
-      options_query: '[?mount == `{{ item }}`] | [0].options'  # noqa: jinja[invalid]
-  with_items:
-      - "{{ rhel7stig_nfs_mounts }}"
-  when:
-      - "'noexec' not in (ansible_mounts | json_query(options_query))"
-  tags:
-      - RHEL-07-021021
-      - mounts
+# - name: "MEDIUM | RHEL-07-021021 | PATCH | The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS)."
+#   ansible.posix.mount:
+#       path: "{{ item }}"
+#       src: "{{ ansible_mounts | json_query(device_query) }}"
+#       fstype: "{{ ansible_mounts | json_query(fstype_query) }}"
+#       opts: "{{ ansible_mounts | json_query(options_query) }},noexec"
+#       state: mounted
+#   vars:
+#       device_query: '[?mount == `{{ item }}`] | [0].device'
+#       fstype_query: '[?mount == `{{ item }}`] | [0].fstype'
+#       options_query: '[?mount == `{{ item }}`] | [0].options'
+#   with_items:
+#       - "{{ rhel7stig_nfs_mounts }}"
+#   when:
+#       - "'noexec' not in (ansible_mounts | json_query(options_query))"
+#   tags:
+#       - RHEL-07-021021
+#       - mounts
 
 - name: "MEDIUM | RHEL-07-021031 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are owned by root, sys, bin, or an application user."
   block:
@@ -1866,20 +1864,20 @@
 #       - permissions
 #       - accounts
 
-- name: "MEDIUM | RHEL-07-021100 | PATCH | The Red Hat Enterprise Linux operating system must have cron logging implemented."
-  ansible.builtin.lineinfile:
-      path: /etc/rsyslog.conf
-      regexp: '^cron\.\*[ \t]+/var/log/cron$'
-      line: 'cron.*                                                  /var/log/cron'
-      insertafter: '#### RULES ####'
-      state: present
-  failed_when:
-      - result is failed
-      - result.rc != 257
-  register: result
-  tags:
-      - RHEL-07-021100
-      - cron
+# - name: "MEDIUM | RHEL-07-021100 | PATCH | The Red Hat Enterprise Linux operating system must have cron logging implemented."
+#   ansible.builtin.lineinfile:
+#       path: /etc/rsyslog.conf
+#       regexp: '^cron\.\*[ \t]+/var/log/cron$'
+#       line: 'cron.*                                                  /var/log/cron'
+#       insertafter: '#### RULES ####'
+#       state: present
+#   failed_when:
+#       - result is failed
+#       - result.rc != 257
+#   register: result
+#   tags:
+#       - RHEL-07-021100
+#       - cron
 
 - name: |
       MEDIUM | RHEL-07-021110 | The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is owned by root.
@@ -1929,7 +1927,7 @@
             regexp: '([A-Z]+ = .*)(sha256\+sha512)(.*)'
             replace: '\1sha512\3'
         register: rhel_07_021620_sha256_512_result
-        notify: "{{ rhel7stig_aide_handler }}"
+        # notify: "{{ rhel7stig_aide_handler }}"
 
       - name: "MEDIUM | RHEL-07-021620 | Replace sha256 entries with sha512"
         ansible.builtin.replace:
@@ -1937,30 +1935,30 @@
             regexp: '([A-Z]+ = .*)(sha256)(.*)'
             replace: '\1sha512\3'
         register: rhel_07_021620_sha256_result
-        notify: "{{ rhel7stig_aide_handler }}"
+        # notify: "{{ rhel7stig_aide_handler }}"
   tags:
       - RHEL-07-021620
       - aide
 
-- name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
-  block:
-      - name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
-        ansible.builtin.shell: grep -o "set root=.*" "{{ rhel7stig_bootloader_path }}" | grep -v "{{ rhel7stig_grub_bootloader_validorder }}" | uniq
-        register: rhel7stig_grub_cfg_mediacheck
-        changed_when: false
-        failed_when: false
+# - name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
+#   block:
+#       - name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
+#         ansible.builtin.shell: grep -o "set root=.*" "{{ rhel7stig_bootloader_path }}" | grep -v "{{ rhel7stig_grub_bootloader_validorder }}" | uniq
+#         register: rhel7stig_grub_cfg_mediacheck
+#         changed_when: false
+#         failed_when: false
 
-      - name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
-        ansible.builtin.debug:
-            msg: "Warning!! The grub2 bootloader potentially has some invalid entries that contain {{ item }}"
-        changed_when: true
-        with_items:
-            - "{{ rhel7stig_grub_cfg_mediacheck.stdout }}"
-        when: rhel7stig_grub_cfg_mediacheck.stdout | length > 0
-  tags:
-      - RHEL-07-021700
-      - grub
-      - bootloader
+#       - name: "MEDIUM | RHEL-07-021700 | AUDIT | The Red Hat Enterprise Linux operating system must not allow removable media to be used as the boot loader unless approved."
+#         ansible.builtin.debug:
+#             msg: "Warning!! The grub2 bootloader potentially has some invalid entries that contain {{ item }}"
+#         changed_when: true
+#         with_items:
+#             - "{{ rhel7stig_grub_cfg_mediacheck.stdout }}"
+#         when: rhel7stig_grub_cfg_mediacheck.stdout | length > 0
+#   tags:
+#       - RHEL-07-021700
+#       - grub
+#       - bootloader
 
 ######################
 ####### 030000 #######
@@ -1991,7 +1989,7 @@
   ansible.builtin.lineinfile:
       path: /etc/audit/rules.d/audit.rules
       regexp: "^-f "
-      line: "-f {{ rhel7stig_auditd_failure_flag }}"
+      line: "-f 2"
   notify: update running audit failure mode
   tags:
       - RHEL-07-030010
@@ -2061,6 +2059,7 @@
       path: /etc/audisp/audisp-remote.conf
       regexp: ^enable_krb5 +=
       line: enable_krb5 = yes
+      create: true
   tags:
       - RHEL-07-030310
       - auditd
@@ -2070,7 +2069,7 @@
   ansible.builtin.lineinfile:
       path: /etc/audisp/audisp-remote.conf
       regexp: ^disk_full_action +=
-      line: "disk_full_action = {{ rhel7stig_audisp_disk_full_action }}"
+      line: "disk_full_action = syslog"
   tags:
       - RHEL-07-030320
       - auditd
@@ -2080,7 +2079,7 @@
   ansible.builtin.lineinfile:
       path: /etc/audisp/audisp-remote.conf
       regexp: ^network_failure_action +=
-      line: "network_failure_action = {{ rhel7stig_audisp_network_failure_action }}"
+      line: "network_failure_action = syslog"
   tags:
       - RHEL-07-030321
       - auditd
@@ -2114,11 +2113,11 @@
   ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: ^action_mail_acct +=
-      line: "action_mail_acct = {{ rhel7stig_auditd_mail_acct }}"
-  failed_when:
-      - rhel7stig_auditd_action_mail_acct_result is failed
-      - rhel7stig_auditd_action_mail_acct_result.rc != 257
-  register: rhel7stig_auditd_action_mail_acct_result
+      line: "action_mail_acct = root"
+#   failed_when:
+#       - rhel7stig_auditd_action_mail_acct_result is failed
+#       - rhel7stig_auditd_action_mail_acct_result.rc != 257
+#   register: rhel7stig_auditd_action_mail_acct_result
   tags:
       - RHEL-07-030350
       - auditd
@@ -2535,28 +2534,28 @@
 #       - V-204572
 #       - auditd
 
-- name: "MEDIUM | RHEL-07-031000 | PATCH | The Red Hat Enterprise Linux operating system must send rsyslog output to a log aggregation server."
-  ansible.builtin.blockinfile:
-      path: /etc/rsyslog.conf
-      state: present
-      block: |
-          $ActionQueueFileName rhel-07-031000  # unique name prefix for spool files
-          $ActionQueueMaxDiskSpace 1g    # 1gb space limit (use as much as possible)
-          $ActionQueueSaveOnShutdown on  # save messages to disk on shutdown
-          $ActionQueueType LinkedList    # run asynchronously
-          $ActionResumeRetryCount -1     # infinite retries if host is down
-          # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
-          *.* {{ rhel7stig_log_aggregation_port }}{{ rhel7stig_log_aggregation_server }}
-      insertafter: EOF
-  failed_when:
-      - result is failed
-      - result.rc != 257
-  register: result
-  when:
-      - rhel7stig_log_aggregation_server is defined
-  tags:
-      - RHEL-07-031000
-      - rsyslog
+# - name: "MEDIUM | RHEL-07-031000 | PATCH | The Red Hat Enterprise Linux operating system must send rsyslog output to a log aggregation server."
+#   ansible.builtin.blockinfile:
+#       path: /etc/rsyslog.conf
+#       state: present
+#       block: |
+#           $ActionQueueFileName rhel-07-031000  # unique name prefix for spool files
+#           $ActionQueueMaxDiskSpace 1g    # 1gb space limit (use as much as possible)
+#           $ActionQueueSaveOnShutdown on  # save messages to disk on shutdown
+#           $ActionQueueType LinkedList    # run asynchronously
+#           $ActionResumeRetryCount -1     # infinite retries if host is down
+#           # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+#           *.* {{ rhel7stig_log_aggregation_port }}{{ rhel7stig_log_aggregation_server }}
+#       insertafter: EOF
+#   failed_when:
+#       - result is failed
+#       - result.rc != 257
+#   register: result
+#   when:
+#       - rhel7stig_log_aggregation_server is defined
+#   tags:
+#       - RHEL-07-031000
+#       - rsyslog
 
 - name: "MEDIUM | RHEL-07-031010 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation."
   ansible.builtin.replace:
@@ -2570,8 +2569,6 @@
       - result is failed
       - result.rc != 257
   register: result
-  when:
-      - not rhel7stig_system_is_log_aggregator
   tags:
       - RHEL-07-031010
       - rsyslog
@@ -2693,7 +2690,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: "(?i)^#?Ciphers"
-      line: "Ciphers {{ rhel7stig_ssh_ciphers }}"
+      line: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr"
       validate: /usr/sbin/sshd -t -f %s
   notify: restart sshd
   tags:
@@ -2701,22 +2698,26 @@
       - ssh
 
 - name: "MEDIUM | RHEL-07-040160 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with a communication session are terminated at the end of the session or after 15 minutes of inactivity from the user at a command prompt, except to fulfill documented and validated mission requirements."
-  ansible.builtin.blockinfile:
-      create: true
-      mode: 0644
-      dest: "{{ item.dest }}"
-      state: "{{ item.state }}"
-      marker: "# {mark} ANSIBLE MANAGED"
-      block: |
-        # Set session timeout - STIG ID RHEL-07-040160
-        declare -xr TMOUT={{ rhel7stig_shell_session_timeout.timeout }}
-  with_items:
-      - dest: "{{ rhel7stig_shell_session_timeout.file }}"
-        state: present
-      - dest: /etc/profile
-        state: "{{ (rhel7stig_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}"
-      - dest: /etc/bashrc
-        state: "{{ (rhel7stig_shell_session_timeout.file == '/etc/bashrc') | ternary('present', 'absent') }}"
+  ansible.builtin.lineinfile:
+      path: /etc/profile.d/tmout.sh
+      regexp: ^TMOUT=
+      line: "declare -xr TMOUT=900"
+
+#       create: true
+#       mode: 0644
+#       dest: /etc/profile.d/tmout.sh
+#       state: "{{ item.state }}"
+#       marker: "# {mark} ANSIBLE MANAGED"
+#       block: |
+#         # Set session timeout - STIG ID RHEL-07-040160
+#         declare -xr TMOUT=900
+#   with_items:
+#       - dest: "{{ rhel7stig_shell_session_timeout.file }}"
+#         state: present
+#       - dest: /etc/profile
+#         state: "{{ (rhel7stig_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}"
+#       - dest: /etc/bashrc
+#         state: "{{ (rhel7stig_shell_session_timeout.file == '/etc/bashrc') | ternary('present', 'absent') }}"
   tags:
       - RHEL-07-040160
       - profile
@@ -2733,48 +2734,48 @@
       - ssh
       - dod_logon_banner
 
-- name: |
-    "MEDIUM | RHEL-07-040180 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
-    "MEDIUM | RHEL-07-040190 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-    "MEDIUM | RHEL-07-040200 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-  block:
-      - name: |
-          "MEDIUM | RHEL-07-040180 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
-          "MEDIUM | RHEL-07-040190 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-          "MEDIUM | RHEL-07-040200 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-        ansible.builtin.shell: systemctl status sssd.service | grep "Active" | cut -d ':' -f1 | tr " " "\n" | sed '/^$/d'
-        check_mode: false
-        failed_when: false
-        changed_when: false
-        register: rhel_07_040180_audit
+# - name: |
+#     "MEDIUM | RHEL-07-040180 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
+#     "MEDIUM | RHEL-07-040190 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#     "MEDIUM | RHEL-07-040200 | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#   block:
+#       - name: |
+#           "MEDIUM | RHEL-07-040180 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
+#           "MEDIUM | RHEL-07-040190 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#           "MEDIUM | RHEL-07-040200 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#         ansible.builtin.shell: systemctl status sssd.service | grep "Active" | cut -d ':' -f1 | tr " " "\n" | sed '/^$/d'
+#         check_mode: false
+#         failed_when: false
+#         changed_when: false
+#         register: rhel_07_040180_audit
 
-      - name: |
-          "MEDIUM | RHEL-07-040180 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
-          "MEDIUM | RHEL-07-040190 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-          "MEDIUM | RHEL-07-040200 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-        ansible.builtin.stat:
-            path: /etc/sssd/sssd.conf
-        changed_when: false
-        register: rhel_07_040180_ldapconf_audit
-        when: rhel_07_040180_audit.stdout == "Active"
+#       - name: |
+#           "MEDIUM | RHEL-07-040180 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
+#           "MEDIUM | RHEL-07-040190 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#           "MEDIUM | RHEL-07-040200 | AUDIT | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#         ansible.builtin.stat:
+#             path: /etc/sssd/sssd.conf
+#         changed_when: false
+#         register: rhel_07_040180_ldapconf_audit
+#         when: rhel_07_040180_audit.stdout == "Active"
 
-      - name: |
-          "MEDIUM | RHEL-07-040180 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
-          "MEDIUM | RHEL-07-040190 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-          "MEDIUM | RHEL-07-040200 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
-        ansible.builtin.blockinfile:
-            block: |
-                ldap_id_use_start_tls = true
-                ldap_tls_reqcert = demand
-                ldap_tls_cacert = "{{ rhel_07_040200_cabundle_path }}"
-            path: /etc/sssd/sssd.conf
-            insertafter: "^ldap_search_base*"
-            create: true
-            mode: 0600
-        when: rhel_07_040180_audit.stdout == "Active"
-  tags:
-      - RHEL-07-040180
-      - ldap
+#       - name: |
+#           "MEDIUM | RHEL-07-040180 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) authentication communications."
+#           "MEDIUM | RHEL-07-040190 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#           "MEDIUM | RHEL-07-040200 | PATCH | The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications."
+#         ansible.builtin.blockinfile:
+#             block: |
+#                 ldap_id_use_start_tls = true
+#                 ldap_tls_reqcert = demand
+#                 ldap_tls_cacert = "{{ rhel_07_040200_cabundle_path }}"
+#             path: /etc/sssd/sssd.conf
+#             insertafter: "^ldap_search_base*"
+#             create: true
+#             mode: 0600
+#         when: rhel_07_040180_audit.stdout == "Active"
+#   tags:
+#       - RHEL-07-040180
+#       - ldap
 
 - name: "MEDIUM | RHEL-07-040201 | PATCH | The Red Hat Enterprise Linux operating system must implement virtual address space randomization."
   ansible.posix.sysctl:
@@ -2790,9 +2791,9 @@
 
 - name: "MEDIUM | RHEL-07-040300 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all networked systems have SSH installed."
   ansible.builtin.package:
-      name:
-          - openssh-clients
-          - openssh-server
+      name: openssh-server
+        #   - openssh-clients
+        #   - openssh-server
       state: present
   vars:
       ansible_python_interpreter: "{{ python2_bin }}"
@@ -2822,18 +2823,18 @@
       - RHEL-07-040320
       - ssh
 
-- name: "MEDIUM | RHEL-07-040330 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow authentication using RSA rhosts authentication."
-  ansible.builtin.lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "(?i)^#?RhostsRSAAuthentication"
-      line: RhostsRSAAuthentication no
-      validate: /usr/sbin/sshd -t -f %s
-  notify: restart sshd
-  when:
-      - ansible_distribution_version is not version_compare('7.4', '>=')
-  tags:
-      - RHEL-07-040330
-      - ssh
+# - name: "MEDIUM | RHEL-07-040330 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow authentication using RSA rhosts authentication."
+#   ansible.builtin.lineinfile:
+#       path: /etc/ssh/sshd_config
+#       regexp: "(?i)^#?RhostsRSAAuthentication"
+#       line: RhostsRSAAuthentication no
+#       validate: /usr/sbin/sshd -t -f %s
+#   notify: restart sshd
+#   when:
+#       - ansible_distribution_version is not version_compare('7.4', '>=')
+#   tags:
+#       - RHEL-07-040330
+#       - ssh
 
 - name: "MEDIUM | RHEL-07-040340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with SSH traffic terminate after a period of inactivity."
   ansible.builtin.lineinfile:
@@ -2902,7 +2903,7 @@
       create: true
       dest: /etc/ssh/sshd_config
       regexp: "(?i)^#?MACs"
-      line: "MACs {{ rhel7stig_ssh_macs }}"
+      line: "MACs hmac-sha2-512,hmac-sha2-256"
       validate: /usr/sbin/sshd -t -f %s
       mode: 0600
   notify: restart sshd
@@ -2926,7 +2927,7 @@
       - name: "MEDIUM | RHEL-07-040410 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH public host key files have mode 0644 or less permissive."
         ansible.builtin.file:
             dest: "{{ item.path }}"
-            mode: a-stx,go-w
+            mode: 0644
             state: file
         with_items: "{{ rhel_07_040410_audit.files | default([]) }}"
   tags:
@@ -2949,7 +2950,7 @@
       - name: "MEDIUM | RHEL-07-040420 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH private host key files have mode 0640 or less permissive."
         ansible.builtin.file:
             dest: "{{ item.path }}"
-            mode: a-stx,go-w,o-r
+            mode: 06400
             state: file
         with_items:
             - "{{ rhel_07_040420_audit.files | default([]) }}"
@@ -3003,53 +3004,53 @@
       - RHEL-07-040460
       - ssh
 
-- name: "MEDIUM | RHEL-07-040470 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow compression or only allows compression after successful authentication."
-  ansible.builtin.lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "(?i)^#?Compression"
-      line: Compression no
-      validate: /usr/sbin/sshd -t -f %s
-  notify: restart sshd
-  when:
-      - ansible_facts['distribution_version'] <= "7.4"
-  tags:
-      - RHEL-07-040470
-      - ssh
+# - name: "MEDIUM | RHEL-07-040470 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow compression or only allows compression after successful authentication."
+#   ansible.builtin.lineinfile:
+#       path: /etc/ssh/sshd_config
+#       regexp: "(?i)^#?Compression"
+#       line: Compression no
+#       validate: /usr/sbin/sshd -t -f %s
+#   notify: restart sshd
+#   when:
+#       - ansible_facts['distribution_version'] <= "7.4"
+#   tags:
+#       - RHEL-07-040470
+#       - ssh
 
-- name: "MEDIUM | RHEL-07-040500 | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
-  block:
-      - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
-        ansible.builtin.package:
-            name: chrony
-            state: absent
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when: "'chrony' in ansible_facts.packages"
+# - name: "MEDIUM | RHEL-07-040500 | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
+#   block:
+#       - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
+#         ansible.builtin.package:
+#             name: chrony
+#             state: absent
+#         vars:
+#             ansible_python_interpreter: "{{ python2_bin }}"
+#         when: "'chrony' in ansible_facts.packages"
 
-      - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
-        ansible.builtin.package:
-            name: ntp
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when: "'ntp' not in ansible_facts.packages"
+#       - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
+#         ansible.builtin.package:
+#             name: ntp
+#             state: present
+#         vars:
+#             ansible_python_interpreter: "{{ python2_bin }}"
+#         when: "'ntp' not in ansible_facts.packages"
 
-      - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
-        ansible.builtin.lineinfile:
-            create: true
-            dest: "{{ rhel7stig_time_service_configs[rhel7stig_time_service].conf }}"
-            regexp: "{{ item.regexp }}"
-            line: "{{ item.line }}"
-            mode: 0600
-        notify: restart {{ rhel7stig_time_service }}
-        with_items:
-            - "{{ rhel7stig_time_service_configs[rhel7stig_time_service].lines }}"
-  when:
-      - rhel7stig_time_service == 'ntpd'
-  tags:
-      - RHEL-07-040500
-      - ntp
-      - ntpd
+#       - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
+#         ansible.builtin.lineinfile:
+#             create: true
+#             dest: "{{ rhel7stig_time_service_configs[rhel7stig_time_service].conf }}"
+#             regexp: "{{ item.regexp }}"
+#             line: "{{ item.line }}"
+#             mode: 0600
+#         notify: restart {{ rhel7stig_time_service }}
+#         with_items:
+#             - "{{ rhel7stig_time_service_configs[rhel7stig_time_service].lines }}"
+#   when:
+#       - rhel7stig_time_service == 'ntpd'
+#   tags:
+#       - RHEL-07-040500
+#       - ntp
+#       - ntpd
 
 - name: "MEDIUM | RHEL-07-040500 | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
   block:
@@ -3071,11 +3072,9 @@
 
       - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
         ansible.builtin.replace:
-            dest: "{{ rhel7stig_time_service_configs[rhel7stig_time_service].conf }}"
+            dest: "{{ rhel7stig_time_service_configs["chronyd"].conf }}"
             regexp: '^server \S+( \w+)?$'
-        notify: restart {{ rhel7stig_time_service }}
-  when:
-      - rhel7stig_time_service == 'chronyd'
+        # notify: restart {{ rhel7stig_time_service }}
   tags:
       - RHEL-07-040500
       - chronyd
@@ -3083,13 +3082,10 @@
 - name: "MEDIUM | RHEL-07-040500 | PATCH | The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
   ansible.builtin.blockinfile:
       insertbefore: BOF
-      dest: "{{ rhel7stig_time_service_configs[rhel7stig_time_service].conf }}"
-      block: "{{ rhel7stig_time_service_configs[rhel7stig_time_service].block }}"
+      dest: "{{ rhel7stig_time_service_configs["chronyd"].conf }}"
+      block: "{{ rhel7stig_time_service_configs["chronyd"].block }}"
       state: present
-  notify: restart {{ rhel7stig_time_service }}
-  when:
-      - rhel7stig_time_service == 'chronyd'
-      - rhel_07_040500
+#   notify: restart {{ rhel7stig_time_service }}
   tags:
       - RHEL-07-040500
       - chronyd
@@ -3321,30 +3317,30 @@
       - RHEL-07-040740
       - ipv4
 
-- name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
-  block:
-      - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
-        ansible.builtin.shell: cat /etc/fstab | grep nfs
-        register: rhel_07_040750_nfssec_check
-        changed_when: false
-        failed_when: false
-        check_mode: false
+# - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
+#   block:
+#       - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
+#         ansible.builtin.shell: cat /etc/fstab | grep nfs
+#         register: rhel_07_040750_nfssec_check
+#         changed_when: false
+#         failed_when: false
+#         check_mode: false
 
-      - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
-        ansible.builtin.debug:
-            msg: "There were no applicable NFS mounts found to audit per RHEL-07-040750."
-        changed_when: true
-        when: rhel_07_040750_nfssec_check.stdout_lines is not defined
+#       - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
+#         ansible.builtin.debug:
+#             msg: "There were no applicable NFS mounts found to audit per RHEL-07-040750."
+#         changed_when: true
+#         when: rhel_07_040750_nfssec_check.stdout_lines is not defined
 
-      - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
-        ansible.builtin.debug:
-            msg: "The following NFS mount is required to be audited per RHEL-07-040750: {{ item }} - If the system is mounting file systems via NFS and has the sec option without the 'krb5:krb5i:krb5p' settings, the 'sec' option has the 'sys' setting, or the 'sec' option is missing, this is a finding."
-        changed_when: true
-        with_items:
-            - "{{ rhel_07_040750_nfssec_check.stdout_lines }}"
-        when: rhel_07_040750_nfssec_check.stdout_lines is defined
-  tags:
-      - RHEL-07-040750
+#       - name: "MEDIUM | RHEL-07-040750 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS."
+#         ansible.builtin.debug:
+#             msg: "The following NFS mount is required to be audited per RHEL-07-040750: {{ item }} - If the system is mounting file systems via NFS and has the sec option without the 'krb5:krb5i:krb5p' settings, the 'sec' option has the 'sys' setting, or the 'sec' option is missing, this is a finding."
+#         changed_when: true
+#         with_items:
+#             - "{{ rhel_07_040750_nfssec_check.stdout_lines }}"
+#         when: rhel_07_040750_nfssec_check.stdout_lines is defined
+#   tags:
+#       - RHEL-07-040750
 
 # - name: "MEDIUM | RHEL-07-040810 | AUDIT | The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services."
 #   block:
@@ -3398,49 +3394,49 @@
       - RHEL-07-040830
       - ipv6
 
-- name: "MEDIUM | RHEL-07-041001 | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
-  block:
-      - name: "MEDIUM | RHEL-07-041001 | PATCH | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
-        ansible.builtin.package:
-            name:
-                - esc
-                - authconfig-gtk
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when:
-            - rhel7stig_gui
+# - name: "MEDIUM | RHEL-07-041001 | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
+#   block:
+#       - name: "MEDIUM | RHEL-07-041001 | PATCH | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
+#         ansible.builtin.package:
+#             name:
+#                 - esc
+#                 - authconfig-gtk
+#             state: present
+#         vars:
+#             ansible_python_interpreter: "{{ python2_bin }}"
+#         when:
+#             - rhel7stig_gui
 
-      - name: "MEDIUM | RHEL-07-041001 | PATCH | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
-        ansible.builtin.package:
-            name: pam_pkcs11
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when: "'pam_pkcs11' not in ansible_facts.packages"
+- name: "MEDIUM | RHEL-07-041001 | PATCH | The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed."
+  ansible.builtin.package:
+    name: pam_pkcs11
+    state: present
+    vars:
+        ansible_python_interpreter: "{{ python2_bin }}"
+  when: "'pam_pkcs11' not in ansible_facts.packages"
   tags:
       - RHEL-07-041001
       - multifactor
 
-- name: "MEDIUM | RHEL-07-041002 | The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM)."
-  block:
-      - name: "MEDIUM | RHEL-07-041002 | AUDIT | Check if pam service is configured in sssd file"
-        ansible.builtin.shell: 'grep -E "^\s*services\s*=.*pam" /etc/sssd/sssd.conf'
-        check_mode: false
-        changed_when:
-            - sssd_services_check.rc == 1
-        failed_when: false
-        register: sssd_services_check
+# - name: "MEDIUM | RHEL-07-041002 | The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM)."
+#   block:
+#       - name: "MEDIUM | RHEL-07-041002 | AUDIT | Check if pam service is configured in sssd file"
+#         ansible.builtin.shell: 'grep -E "^\s*services\s*=.*pam" /etc/sssd/sssd.conf'
+#         check_mode: false
+#         changed_when:
+#             - sssd_services_check.rc == 1
+#         failed_when: false
+#         register: sssd_services_check
 
-      - name: "MEDIUM | RHEL-07-041002 | PATCH | The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM)."
-        ansible.builtin.debug:
-            msg: "Warning!! SSSD is in use and /etc/sssd/sssd.conf is not configured to use the PAM service (services = nss, pam)"
-        when: sssd_services_check.rc == 1
-  when:
-      - rhel7stig_auth_settings.use_sssd
-  tags:
-      - RHEL-07-041002
-      - sssd
+#       - name: "MEDIUM | RHEL-07-041002 | PATCH | The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM)."
+#         ansible.builtin.debug:
+#             msg: "Warning!! SSSD is in use and /etc/sssd/sssd.conf is not configured to use the PAM service (services = nss, pam)"
+#         when: sssd_services_check.rc == 1
+#   when:
+#       - rhel7stig_auth_settings.use_sssd
+#   tags:
+#       - RHEL-07-041002
+#       - sssd
 
 - name: "MEDIUM | RHEL-07-041003 | The Red Hat Enterprise Linux operating system must implement certificate status checking for PKI authentication."
   ansible.builtin.replace:
@@ -3463,8 +3459,8 @@
         ansible.builtin.shell: nmcli radio wifi off
         when:
             - "'enabled' in rhel_07_wifi_enabled.stdout"
-  when:
-      - "'NetworkManager' in ansible_facts.packages"
+#   when:
+#       - "'NetworkManager' in ansible_facts.packages"
   tags:
       - RHEL-07-041010
       - wifi
@@ -3498,7 +3494,7 @@
             mode: 0600
         with_items:
             - "{{ rhel_07_910055_audit_log_files.files }}"
-        when: item.mode is not search '(0[4,6]00)'
+        # when: item.mode is not search '(0[4,6]00)'
   tags:
       - RHEL-07-910055
       - logs

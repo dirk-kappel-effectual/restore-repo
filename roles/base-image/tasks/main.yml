@@ -105,17 +105,17 @@
   tags:
       - low
 
-# - name: update auditd
-#   ansible.builtin.template:
-#       src: audit/99_auditd.rules.j2
-#       dest: /etc/audit/rules.d/99_auditd.rules
-#       owner: root
-#       group: root
-#       mode: 0600
-#   register: auditd_file
-#   notify: restart auditd
-#   when:
-#       - update_audit_template
+- name: update auditd
+  ansible.builtin.template:
+      src: audit/99_auditd.rules.j2
+      dest: /etc/audit/rules.d/99_auditd.rules
+      owner: root
+      group: root
+      mode: 0600
+  register: auditd_file
+  notify: restart auditd
+  tags:
+      - auditd
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers

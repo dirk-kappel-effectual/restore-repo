@@ -1,0 +1,30 @@
+---
+
+lv_list:
+  - lv: home_vol
+    lv_dev: /dev/vg-01/home_vol
+    size: 5G
+    mount_point: /home
+    mount_options: nodev
+  - lv: var_vol
+    lv_dev: /dev/vg-01/var_vol
+    size: 10G
+    mount_point: /var
+    mount_options: defaults
+  - lv: var_log_vol
+    lv_dev: /dev/vg-01/var_log_vol
+    size: 10G
+    mount_point: /var/log
+    mount_options: defaults
+  - lv: var_log_audit_vol
+    lv_dev: /dev/vg-01/var_log_audit_vol
+    size: 5G
+    mount_point: /var/log/audit
+    mount_options: defaults
+  - lv: tmp_vol
+    lv_dev: /dev/vg-01/tmp_vol
+    size: 9.99G
+    mount_point: /tmp
+    mount_options: nodev,nosuid,noexec
+
+ansible_remote_tmp: /tmp
