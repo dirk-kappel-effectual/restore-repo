@@ -50,9 +50,9 @@
 - name: undo existing prelinking
   ansible.builtin.shell: prelink -ua
 
-- name: update running audit failure mode
-  ansible.builtin.shell: auditctl -f {{ rhel7stig_auditd_failure_flag }}
-  failed_when: false
+# - name: update running audit failure mode
+#   ansible.builtin.shell: auditctl -f {{ rhel7stig_auditd_failure_flag }}
+#   failed_when: false
 
 - name: clean up ssh host key
   ansible.builtin.file:

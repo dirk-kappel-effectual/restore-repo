@@ -1316,7 +1316,7 @@
       path: /etc/audit/rules.d/audit.rules
       regexp: "^-f "
       line: "-f 2"
-  notify: update running audit failure mode
+#   notify: update running audit failure mode
   tags:
       - RHEL-07-030010
       - auditd
