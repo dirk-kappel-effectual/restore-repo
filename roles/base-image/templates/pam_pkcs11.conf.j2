@@ -31,7 +31,7 @@ pam_pkcs11 {
 
   screen_savers = gnome-screensaver,xscreensaver,kscreensaver
 
-  pkcs11_module {{ rhel07stig_smartcarddriver }} {
+  {# pkcs11_module {{ rhel07stig_smartcarddriver }} {
     {% if rhel07stig_smartcarddriver == 'cackey' %}module = /usr/lib64/libcackey.so;{% elif rhel07stig_smartcarddriver == 'coolkey' %}module = libcoolkeypk11.so;{% endif %}
     module = /usr/lib64/libcackey.so;
     description = "{{ rhel07stig_smartcarddriver }}";
@@ -40,7 +40,7 @@ pam_pkcs11 {
     ca_dir = /etc/pam_pkcs11/cacerts;
     crl_dir = /etc/pam_pkcs11/crls;
     cert_policy = signature;
-  }
+  } #}
 
   pkcs11_module opensc {
     module = opensc-pkcs11.so;

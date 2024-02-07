@@ -1,7 +1,6 @@
 ---
 
 - name: Install Amazon SSM Agent
-  tags: ssm
   block:
     - name: Download amazon-ssm-agent.rpm
       ansible.builtin.get_url:
@@ -14,31 +13,31 @@
         disable_gpg_check: true
         state: latest
       notify: "Start and Enable SSM Agent"
+  tags: ssm
 
 - name: Install Nano, Unzip, Wget
-  tags: nano,unzip,wget
   ansible.builtin.package:
     name:
       - nano
       - unzip
       - wget
     state: latest
+  tags: nano,unzip,wget
 
 - name: Download EPEL repository
-  tags: epel
   ansible.builtin.get_url:
     url: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     dest: /tmp/epel-release-latest-7.noarch.rpm
+  tags: epel
 
 - name: Install EPEL package
-  tags: epel
   ansible.builtin.package:
     name: /tmp/epel-release-latest-7.noarch.rpm
     disable_gpg_check: true
     state: latest
+  tags: epel
 
 - name: Install AWS CLI v2
-  tags: awscli
   block:
     - name: Check if awscliv2 is installed.
       ansible.builtin.command: 
@@ -58,50 +57,15 @@
       ansible.builtin.command: 
         cmd: "/home/ec2-user/aws/install -b /usr/bin/"
       when: awscliv2_installed.rc != 0
-
-# - name: Install mcafee virus protection
-#   tags: mcafee
-#   ansible.builtin.script: ./scripts/install.sh -i
+  tags: awscli
 
 - name: Import DoD root and WCF certificates into linux CA store
-  tags: import_certs
   ansible.builtin.script: ./scripts/add-dod-and-wcf-certs.sh
+  tags: import_certs
 
 - name: Install AWS certificate bundle for GovCloud regions
-  tags: import_certs
   ansible.builtin.get_url:
     url: https://truststore.pki.us-gov-west-1.rds.amazonaws.com/global/global-bundle.pem
     dest: /etc/pki/tls/certs/global-bundle.pem
     mode: '0644'
-
-# - name: Install AWS Cloudwatch Agent
-#   tags: build-servers
-#   block:
-#     - name: Download CloudWatch Agent
-#       ansible.builtin.get_url:
-#         url: "https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm"
-#         dest: "/tmp/amazon-cloudwatch-agent.rpm"
-
-#     - name: Install CloudWatch Agent
-#       ansible.builtin.package:
-#         name: "/tmp/amazon-cloudwatch-agent.rpm"
-#         state: present
-#         disable_gpg_check: true
-
-#     - name: Copy CloudWatch Agent Configuration file
-#       ansible.builtin.copy:
-#         src: ./files/cw_config.json
-#         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
-#         owner: root
-#         group: root
-#         mode: 0644
-#       notify: "Enable CloudWatch Agent"
-
-# - name: Copy fstab file to /etc/fstab.tmp
-#   tags: build-servers
-#   ansible.builtin.copy:
-#     src: ./files/fstab
-#     dest: /etc/fstab.tmp
-#     owner: root
-#     group: root
-#     mode: 0644
+  tags: import_certs
