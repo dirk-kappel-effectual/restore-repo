@@ -4,8 +4,6 @@
       ansible.builtin.package:
         name: iptables
         state: present
-      when:
-        - "'iptables' not in ansible_facts.packages"
 
     - name: "MEDIUM | RHEL-07-040100 | PATCH | Stop iptables services"
       ansible.builtin.systemd_service:
