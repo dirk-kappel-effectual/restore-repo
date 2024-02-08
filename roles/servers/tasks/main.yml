@@ -23,12 +23,15 @@
         mode: 0644
       notify: "Enable CloudWatch Agent"
 
-- name: Copy fstab file to /etc/fstab.tmp
-  tags: build-servers
-  ansible.builtin.copy:
-    src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/fstab"
-    dest: /etc/fstab.tmp
-    owner: root
-    group: root
-    mode: 0644
+- name: Install Iptables
+  ansible.builtin.import_tasks:
+      file: firewall.yml
+  tags:
+      - firewall
+
+- name: Format and Mount Volumes
+  ansible.builtin.import_tasks:
+      file: volumes.yml
+  tags:
+      - volumes
 
