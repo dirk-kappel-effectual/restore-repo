@@ -48,7 +48,7 @@
   - name: Mount /tmp volume
     ansible.posix.mount:
       path: /tmp
-      src: "UUID={{ lv_uuid.results | selectattr('item.lv', 'equalto', tmp_vol) | map(attribute='stdout') | first }}"
+      src: "UUID={{ lv_uuid.results | selectattr('item.lv', 'equalto', 'tmp_vol') | map(attribute='stdout') | first }}"
       fstype: xfs
       opts: nodev,nosuid,noexec
       state: mounted
