@@ -6,17 +6,17 @@
     ansible.builtin.yum:
       name: lvm2
       state: present
-      
+
   - name: Install rsync
     ansible.builtin.yum:
       name: rsync
       state: present
 
-  - name: rsync the data to /tmp
-    ansible.posix.synchronize:
-      src: "{{ item.mount_point }}/"
-      dest: "/tmp{{ item.mount_point }}/"
-    loop: "{{ lv_list }}"
+  # - name: rsync the data to /tmp
+  #   ansible.posix.synchronize:
+  #     src: "{{ item.mount_point }}/"
+  #     dest: "/tmp{{ item.mount_point }}/"
+  #   loop: "{{ lv_list }}"
   # - name: rsync the data to /tmp
   #   ansible.builtin.shell: rsync -av {{ item.mount_point }}/ /tmp{{ item.mount_point }}/
   #   loop: "{{ lv_list }}"
@@ -44,6 +44,22 @@
     register: lv_uuid
     loop: "{{ lv_list }}"
     changed_when: false
+
+  - name: Mount /tmp volume
+    ansible.posix.mount:
+      path: /tmp
+      src: "UUID={{ lv_uuid.results | selectattr('item.lv', 'equalto', tmp_vol) | map(attribute='stdout') | first }}"
+      fstype: xfs
+      opts: nodev,nosuid,noexec
+      state: mounted
+      dump: 0
+      passno: 2
+
+  - name: rsync the data to /tmp
+    ansible.posix.synchronize:
+      src: "{{ item.mount_point }}/"
+      dest: "/tmp{{ item.mount_point }}/"
+    loop: "{{ lv_list }}"
 
   - name: Mount Logical Volumes
     ansible.posix.mount:
