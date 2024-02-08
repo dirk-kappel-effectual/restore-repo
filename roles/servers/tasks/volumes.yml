@@ -6,6 +6,11 @@
     ansible.builtin.yum:
       name: lvm2
       state: present
+      
+  - name: Install rsync
+    ansible.builtin.yum:
+      name: rsync
+      state: present
 
   - name: rsync the data to /tmp
     ansible.posix.synchronize:
