@@ -27,7 +27,7 @@ lv_list:
     selinux_context: auditd_log_t
   - lv: var_tmp_vol
     lv_dev: /dev/vg-01/var_tmp_vol
-    size: 9.99G
+    size: 9G
     mount_point: /var/tmp
     mount_options: nodev,nosuid,noexec
     selinux_context: tmp_t

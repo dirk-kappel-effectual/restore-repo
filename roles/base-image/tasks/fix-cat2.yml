@@ -1882,6 +1882,15 @@
       - RHEL-07-040712
       - ssh
 
+- name: "MEDIUM | RHEL-07-040712 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that remote X connections are disabled except to fulfill documented and validated mission requirements"
+  ansible.builtin.lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "HostKey /etc/ssh/ssh_host_ed25519_key"
+      line: "#HostKey /etc/ssh/ssh_host_ed25519_key"
+  tags:
+      - RHEL-07-040712
+      - ssh
+      
 - name: "MEDIUM | RHEL-07-040740 | PATCH | The Red Hat Enterprise Linux operating system must not be performing packet forwarding unless the system is a router."
   ansible.posix.sysctl:
       name: net.ipv4.ip_forward

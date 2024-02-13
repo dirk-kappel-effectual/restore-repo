@@ -25,6 +25,13 @@
       size: "{{ item.size }}"
     loop: "{{ lv_list }}"
 
+  # - name: Resize /var/tmp to use remaining space in the volume
+  #   community.general.lvol:
+  #     vg: vg-01
+  #     lv: var_tmp_vol
+  #     size: 100%FREE
+  #     force: true
+
   - name: Format the xfs filesystem
     community.general.filesystem:
       fstype: xfs
@@ -38,8 +45,10 @@
     changed_when: false
 
   - name: rsync the data to /tmp
-    ansible.builtin.shell: rsync -avAX --exclude 'tmp/*' {{ item.mount_point }}/ /tmp{{ item.mount_point }}/
+    ansible.builtin.shell: rsync -avAX --exclude 'tmp/*' --no-xattrs {{ item.mount_point }}/ /tmp{{ item.mount_point }}/
     loop: "{{ lv_list }}"
+    when: 
+      - item.lv != 'var_tmp_vol'
 
   - name: Mount Logical Volumes
     ansible.posix.mount:
@@ -59,15 +68,19 @@
       state: present
     loop: "{{ lv_list }}"
 
-  - name: Apply new SELinux file context to filesystems
-    ansible.builtin.command: "restorecon -irv {{ item.mount_point}}"
-    loop: "{{ lv_list }}"
+  # - name: Apply new SELinux file context to filesystems
+  #   ansible.builtin.command: "restorecon -irv {{ item.mount_point}}"
+  #   loop: "{{ lv_list }}"
 
   - name: rsync the data to new mounts
-    ansible.builtin.shell: rsync -avAX /tmp{{ item.mount_point }}/ {{ item.mount_point }}/ 
+    ansible.builtin.shell: rsync -avAX --no-xattrs /tmp{{ item.mount_point }}/ {{ item.mount_point }}/ 
     loop:  "{{ lv_list }}"
     when: 
       - item.lv != 'var_tmp_vol'
+
+  - name: Apply new SELinux file context to filesystems
+    ansible.builtin.command: "restorecon -irv {{ item.mount_point}}"
+    loop: "{{ lv_list }}"
 
   tags:
     - volumes

@@ -23,3 +23,4 @@ rhel7stig_re_qp_key_end: (?:" *)
 rhel7stig_re_qp_insert: "{{ insert | default(not (append | default(true))) }}"
 
 extra_path: /usr/local/bin
+ansible_remote_tmp: /tmp
