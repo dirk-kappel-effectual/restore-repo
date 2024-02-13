@@ -279,3 +279,12 @@
   tags:
       - always
       - auditd
+
+- name: "PRELIM | Find EBS volume device name of first device that is not partitioned"
+  set_fact:
+    block_device_name: "{{ ansible_devices | dict2items | selectattr('value.partitions', 'equalto', {}) | map(attribute='key') | first }}"
+
+- name: "PRELIM | Output block device name"
+  debug:
+    var: block_device_name
+  when: block_device_name is defined

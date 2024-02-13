@@ -43,6 +43,12 @@
   tags:
       - oldcc-base
 
+- name: Install additional volumes for separate partitions of /home, /var, /var/log, /var/log/audit, and /var/tmp
+  ansible.builtin.import_tasks:
+      file: volumes.yml
+  tags:
+      - volumes
+
 - name: Include CAT I patches
   ansible.builtin.import_tasks:
       file: fix-cat1.yml
