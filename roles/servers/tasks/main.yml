@@ -1,7 +1,12 @@
 ---
 
+- name: Preliminary tasks
+  ansible.builtin.import_tasks:
+     file: prelim.yml
+  tags:
+    - prelim
+
 - name: Install AWS Cloudwatch Agent
-  tags: build-servers
   block:
     - name: Download CloudWatch Agent
       ansible.builtin.get_url:
@@ -16,22 +21,23 @@
 
     - name: Copy CloudWatch Agent Configuration file
       ansible.builtin.copy:
-        src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/cw_config.json"
+        src: "./files/cw_config.json"
         dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
         owner: root
         group: root
         mode: 0644
       notify: "Enable CloudWatch Agent"
+  tags: cloudwatch
 
 - name: Install Iptables
   ansible.builtin.import_tasks:
-      file: firewall.yml
+    file: firewall.yml
   tags:
-      - firewall
+    - firewall
 
 - name: Format and Mount Volumes
   ansible.builtin.import_tasks:
-      file: volumes.yml
+    file: volumes.yml
   tags:
-      - volumes
+    - volumes
 

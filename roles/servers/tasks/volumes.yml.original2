@@ -37,9 +37,36 @@
     loop: "{{ lv_list }}"
     changed_when: false
 
-  - name: rsync the data to /tmp
-    ansible.builtin.shell: rsync -avAX --exclude 'tmp/*' {{ item.mount_point }}/ /tmp{{ item.mount_point }}/
+  - name: Debug UUIDs
+    debug:
+      var: lv_uuid.results
+    when: lv_uuid.results | length > 0
+
+  - name: Mount /media/tmp volume
+    ansible.posix.mount:
+      # path: "{{ item.mount_point }}"
+      path: /media/tmp
+      src: "UUID={{ lv_uuid.results | selectattr('item.lv', 'equalto', item.lv) | map(attribute='stdout') | first }}"
+      fstype: xfs
+      opts: "{{ item.mount_options }}"
+      state: mounted
     loop: "{{ lv_list }}"
+    when: item.lv == 'var_tmp_vol'
+
+  - name: Configure SELinux context of /media/tmp
+    community.general.sefcontext:
+      target: '/media/tmp(/.*)?'
+      setype: tmp_t
+      state: present
+
+  - name: Apply new SELinux file context to filesystem
+    ansible.builtin.command: restorecon -irv /media/tmp
+
+  - name: rsync the data to /media/tmp
+    ansible.builtin.shell: rsync -avAX --exclude 'tmp/*' {{ item.mount_point }}/ /media/tmp{{ item.mount_point }}/
+    loop: "{{ lv_list }}"
+    when:
+      - item.lv != 'var_tmp_vol'
 
   - name: Mount Logical Volumes
     ansible.posix.mount:
@@ -51,6 +78,8 @@
       dump: 0
       passno: 2
     loop: "{{ lv_list }}"
+    when:
+      - item.lv != 'var_tmp_vol'
 
   - name: Configure SELinux context of attached LVM
     community.general.sefcontext:
@@ -58,16 +87,41 @@
       setype: "{{ item.selinux_context }}"
       state: present
     loop: "{{ lv_list }}"
+    when:
+      - item.lv != 'var_tmp_vol'
 
   - name: Apply new SELinux file context to filesystems
     ansible.builtin.command: "restorecon -irv {{ item.mount_point}}"
     loop: "{{ lv_list }}"
+    when:
+      - item.lv != 'var_tmp_vol'
 
   - name: rsync the data to new mounts
-    ansible.builtin.shell: rsync -avAX /tmp{{ item.mount_point }}/ {{ item.mount_point }}/ 
+    ansible.builtin.shell: rsync -avAX /media/tmp{{ item.mount_point }}/ {{ item.mount_point }}/ 
     loop:  "{{ lv_list }}"
     when: 
       - item.lv != 'var_tmp_vol'
+
+  - name: Reformat /media/tmp with xfs filesystem
+    community.general.filesystem:
+      fstype: xfs
+      dev: /dev/vg-01/var_tmp_vol
+      force: true
+
+  - name: Unmount /media/tmp
+    ansible.builtin.mount:
+      path: /media/tmp
+      state: absent
+
+  - name: Mount /var/tmp volume
+    ansible.posix.mount:
+      path: /var/tmp
+      src: "UUID={{ lv_uuid.results | selectattr('item.lv', 'equalto', 'var_tmp_vol') | map(attribute='stdout') | first }}"
+      fstype: xfs
+      opts: "{{ item.mount_options }}"
+      state: mounted
+    loop: "{{ lv_list }}"
+    when: item.lv == 'var_tmp_vol'
 
   tags:
     - volumes

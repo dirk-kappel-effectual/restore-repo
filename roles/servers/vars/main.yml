@@ -6,25 +6,30 @@ lv_list:
     size: 5G
     mount_point: /home
     mount_options: nodev
+    selinux_context: user_home_dir_t
   - lv: var_vol
     lv_dev: /dev/vg-01/var_vol
     size: 10G
     mount_point: /var
     mount_options: defaults
+    selinux_context: var_t
   - lv: var_log_vol
     lv_dev: /dev/vg-01/var_log_vol
     size: 10G
     mount_point: /var/log
     mount_options: defaults
+    selinux_context: var_log_t
   - lv: var_log_audit_vol
     lv_dev: /dev/vg-01/var_log_audit_vol
     size: 5G
     mount_point: /var/log/audit
     mount_options: defaults
-  - lv: tmp_vol
-    lv_dev: /dev/vg-01/tmp_vol
+    selinux_context: auditd_log_t
+  - lv: var_tmp_vol
+    lv_dev: /dev/vg-01/var_tmp_vol
     size: 9.99G
-    mount_point: /tmp
+    mount_point: /var/tmp
     mount_options: nodev,nosuid,noexec
+    selinux_context: tmp_t
 
 ansible_remote_tmp: /tmp

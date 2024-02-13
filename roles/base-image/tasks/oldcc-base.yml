@@ -37,11 +37,24 @@
     state: latest
   tags: epel
 
+- name: Add "{{ extra_path }}" to PATH of root user
+  ansible.builtin.lineinfile:
+    path: /root/.bashrc
+    line: 'export PATH="{{ extra_path }}:$PATH"'
+    state: present
+  tags: path
+
 - name: Install AWS CLI v2
   block:
+    - name: Make /tmp directory executable temporarily
+      ansible.posix.mount:
+        path: /tmp
+        state: remounted
+        opts: exec
+
     - name: Check if awscliv2 is installed.
       ansible.builtin.command: 
-        cmd: "aws --version"
+        cmd: "/usr/local/bin/aws --version"
       register: awscliv2_installed
       failed_when: false
       changed_when: false
@@ -49,13 +62,13 @@
     - name: Download awscliv2 installer.
       ansible.builtin.unarchive: 
         src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: /home/ec2-user
+        dest: /tmp
         remote_src: yes
       when: awscliv2_installed.rc != 0
 
     - name: Install AWS CLI v2
       ansible.builtin.command: 
-        cmd: "/home/ec2-user/aws/install -b /usr/bin/"
+        cmd: "/tmp/aws/install"
       when: awscliv2_installed.rc != 0
   tags: awscli
 
