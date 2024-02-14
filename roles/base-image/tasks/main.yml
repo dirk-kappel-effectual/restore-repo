@@ -20,11 +20,6 @@
   tags:
       - RHEL-07-021350
 
-# - name: Include OS specific variables
-#   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
-#   tags:
-#       - always
-
 - name: include prelim tasks
   ansible.builtin.import_tasks:
       file: prelim.yml
