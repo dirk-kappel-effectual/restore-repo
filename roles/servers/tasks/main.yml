@@ -1,11 +1,5 @@
 ---
 
-- name: Preliminary tasks
-  ansible.builtin.import_tasks:
-     file: prelim.yml
-  tags:
-    - prelim
-
 - name: Install AWS Cloudwatch Agent
   block:
     - name: Download CloudWatch Agent
@@ -34,10 +28,3 @@
     file: firewall.yml
   tags:
     - firewall
-
-- name: Format and Mount Volumes
-  ansible.builtin.import_tasks:
-    file: volumes.yml
-  tags:
-    - volumes
-
