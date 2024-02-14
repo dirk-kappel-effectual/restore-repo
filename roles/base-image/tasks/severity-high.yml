@@ -236,9 +236,6 @@
             value: "{{ fips_value }}"
             append: true
         notify: confirm grub2 user cfg
-        # when:
-        #     - not ansible_check_mode or
-        #       rhel7_stig_grub_template is not changed
 
       - name: "HIGH | RHEL-07-021350 | PATCH | If /boot or /boot/efi reside on separate partitions, the kernel parameter boot=<partition> must be added to the kernel command line."
         block:

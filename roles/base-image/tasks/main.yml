@@ -20,10 +20,10 @@
   tags:
       - RHEL-07-021350
 
-- name: Include OS specific variables
-  ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
-  tags:
-      - always
+# - name: Include OS specific variables
+#   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
+#   tags:
+#       - always
 
 - name: include prelim tasks
   ansible.builtin.import_tasks:
@@ -49,21 +49,21 @@
   tags:
       - volumes
 
-- name: Include CAT I patches
+- name: HIGH Severity
   ansible.builtin.import_tasks:
-      file: fix-cat1.yml
+      file: severity-high.yml
   tags:
       - high
 
-- name: Include CAT II patches
+- name: MEDIUM Severity
   ansible.builtin.import_tasks:
-      file: fix-cat2.yml
+      file: severity-medium.yml
   tags:
       - medium
 
-- name: Include CAT III patches
+- name: LOW Severity
   ansible.builtin.import_tasks:
-      file: fix-cat3.yml
+      file: severity-low.yml
   tags:
       - low
 

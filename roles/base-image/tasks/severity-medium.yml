@@ -879,7 +879,7 @@
 - name: "MEDIUM | RHEL-07-020630 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that all local interactive user home directories have mode 0750 or less permissive."
   ansible.builtin.file:
       path: "{{ item.dir }}"
-      mode: "{{ rhel7stig_homedir_mode }}"
+      mode: "g-w,o-rwx"
       state: directory
   with_items:
       - "{{ rhel7stig_passwd }}"
@@ -1215,15 +1215,15 @@
         when:
             - rhel_07_021031_world_writable_files_flat != []
 
-      - name: "MEDIUM | RHEL-07-021031 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are owned by root, sys, bin, or an application user. | Adjust world-writable files"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            owner: root
-        with_items:
-            - "{{ rhel_07_021031_world_writable_files_flat }}"
-        when:
-            - rhel7stig_world_write_files_owner_root
-            - rhel_07_021031_world_writable_files_flat != []
+    #   - name: "MEDIUM | RHEL-07-021031 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are owned by root, sys, bin, or an application user. | Adjust world-writable files"
+    #     ansible.builtin.file:
+    #         path: "{{ item }}"
+    #         owner: root
+    #     with_items:
+    #         - "{{ rhel_07_021031_world_writable_files_flat }}"
+    #     when:
+    #         - rhel7stig_world_write_files_owner_root
+    #         - rhel_07_021031_world_writable_files_flat != []
   tags:
       - RHEL-07-021031
       - fileperms
