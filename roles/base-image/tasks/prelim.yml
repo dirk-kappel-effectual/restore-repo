@@ -4,7 +4,7 @@
   block:
       - name: Check if python36-rpm package installed
         ansible.builtin.shell: rpm -q python36-rpm
-        failed_when: ( python36_rpm_present.rc not in [ 0, 1 ] )
+        failed_when: python36_rpm_present.rc not in [ 0, 1 ]
         changed_when: false
         register: python36_rpm_present
 
@@ -24,8 +24,19 @@
         loop:
             - python36-rpm
             - libselinux-python3
-  when:
-      - ( ansible_python.version.major == 3  and ansible_python.version.minor == 6 )
+  tags: python3
+
+- name: "PRELIM | Install botocore and boto3 for Python 3"
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: pip3
+    state: present
+  loop:
+    - botocore
+    - boto3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tags: botocore,boto3
 
 - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Gather local interactive user directories"
   ansible.builtin.shell: "getent passwd {1000..65535} | cut -d: -f6 | sort -u | grep -v '/var/' | grep -v '/nonexistent/*' | grep -v '/run/*'"
@@ -37,7 +48,6 @@
       - RHEL-07-020710
       - RHEL-07-020720
       - RHEL-07-020730
-
 
 - name: "PRELIM | RHEL-07-020680 | RHEL-07-020710 | RHEL-07-020720 | RHEL-07-020730 | Set fact for home directory paths for interactive users"
   ansible.builtin.set_fact:
@@ -284,7 +294,13 @@
   set_fact:
     block_device_name: "{{ ansible_devices | dict2items | selectattr('value.partitions', 'equalto', {}) | map(attribute='key') | first }}"
 
-- name: "PRELIM | Output block device name"
+- name: "PRELIM | Output block device name of attached volume"
   debug:
     var: block_device_name
   when: block_device_name is defined
+
+- name: "PRELIM | Make /tmp directory executable temporarily"
+  ansible.posix.mount:
+    path: /tmp
+    state: remounted
+    opts: exec

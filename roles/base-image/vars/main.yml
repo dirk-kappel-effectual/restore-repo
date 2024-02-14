@@ -68,3 +68,8 @@ gpg_keys:
 
 gpg_package: "redhat-release"
 rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution | lower }}-release
+
+# RHEL-07-032000
+# mcafee_agent_bucket: oea-administration
+# mcafee_agent_object: HBSS/20240131_LinuxHBSS_581313/install.sh
+mcafee_agent_path: /tmp/mcafee_install.sh

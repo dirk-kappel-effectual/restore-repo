@@ -267,11 +267,34 @@
       - telnet
 
 - name: "HIGH | RHEL-07-032000 | The Red Hat Enterprise Linux operating system must use a virus scan program."
-  ansible.builtin.script: ./scripts/install.sh -i
-  when: "'MFEcma' not in ansible_facts.packages"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  block:
+
+  - name: Download Mcafee Agent from S3 bucket
+    amazon.aws.s3_object:
+      bucket: "{{ mcafee_agent_bucket }}"
+      object: "{{ mcafee_agent_object }}"
+      dest: "{{ mcafee_agent_path }}"
+      mode: get
+
+  - name: Make agent installation script executable
+    ansible.builtin.file:
+      path: "{{ mcafee_agent_path }}"
+      mode: '740'
+
+  - name: Install Mcafee Agent
+    ansible.builtin.command: 
+      argv: 
+        - "{{ mcafee_agent_path }}" 
+        - -i
+  when: 
+    - "'MFEcma' not in ansible_facts.packages"
+    - mcafee_agent_bucket is defined
   tags:
       - RHEL-07-032000
       - antivirus
+      - mcafee
 
 - name: "HIGH | RHEL-07-040540 | The Red Hat Enterprise Linux operating system must not contain .shosts files."
   block:

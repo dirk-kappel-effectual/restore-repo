@@ -46,12 +46,6 @@
 
 - name: Install AWS CLI v2
   block:
-    - name: Make /tmp directory executable temporarily
-      ansible.posix.mount:
-        path: /tmp
-        state: remounted
-        opts: exec
-
     - name: Check if awscliv2 is installed.
       ansible.builtin.command: 
         cmd: "/usr/local/bin/aws --version"
