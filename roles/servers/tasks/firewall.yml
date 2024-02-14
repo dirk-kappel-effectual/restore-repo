@@ -12,7 +12,6 @@
 
     - name: "MEDIUM | RHEL-07-040100 | PATCH | Copy over iptables config file"
       ansible.builtin.copy:
-        # src: "./files/packer-oldcc-grants-server/iptables"
         src: "./files/{{ lookup('ansible.builtin.env', 'REPO_NAME') }}/iptables"
         dest: /tmp/iptables
         owner: root
