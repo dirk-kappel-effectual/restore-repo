@@ -238,23 +238,33 @@
       - RHEL-07-010230
       - login
 
-- name: "MEDIUM | RHEL-07-010240 | The Red Hat Enterprise Linux operating system must be configured so that passwords are restricted to a 24 hours/1 day minimum lifetime."
+- name: "MEDIUM | RHEL-07-010240 | RHEL-07-010260"
   block:
-      - name: "MEDIUM | RHEL-07-010240 | AUDIT | Passwords must be restricted to a 24 hours/1 day minimum lifetime."
-        ansible.builtin.shell: "awk -F: '$1 !~ /^root$/ && $2 !~ /^[!*]/ && $4 < 1 {print $1}' /etc/shadow"
-        check_mode: false
-        changed_when: false
-        register: rhel_07_010240_audit
+    - name: Setting host facts using complex arguments
+      ansible.builtin.set_fact:
+        my_password_hash: "{{ 'Mypa21ssword512!+zeAY2' | password_hash('sha512') }}"
 
-      - name: "MEDIUM | RHEL-07-010240 | PATCH | Passwords must be restricted to a 24 hours/1 day minimum lifetime."
-        ansible.builtin.shell: chage -m 1 {{ item }}
-        check_mode: false
-        changed_when: true
-        with_items:
-            - "{{ rhel_07_010240_audit.stdout_lines }}"
-  tags:
-      - RHEL-07-010240
-      - password
+    - name: Output password hash
+      ansible.builtin.debug:
+        var: my_password_hash
+
+    - name: | 
+        MEDIUM | RHEL-07-010240 | PATCH | Passwords must be restricted to a 24 hours/1 day minimum lifetime.
+        MEDIUM | RHEL-07-010260 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime.
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password: "{{ my_password_hash }}"
+        password_expire_max: 60
+        password_expire_min: 1
+      with_items: "{{ user_accounts }}"  
+
+    - name: "MEDIUM | RHEL-07-010260 | PATCH | Set 7 day warning to notify user of password expiration."
+      ansible.builtin.shell: "chage -W 7 {{ item }}"
+      with_items: "{{ user_accounts }}"
+  tags: 
+    - password
+    - RHEL-07-010240
+    - RHEL-07-010260
 
 - name: "MEDIUM | RHEL-07-010250 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords for new users are restricted to a 60-day maximum lifetime."
   ansible.builtin.lineinfile:
@@ -266,27 +276,6 @@
   tags:
       - RHEL-07-010250
       - login
-
-- name: "MEDIUM | RHEL-07-010260 | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime."
-  block:
-      - name: "MEDIUM | RHEL-07-010260 | AUDIT | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime."
-        ansible.builtin.shell: "awk -F: '$1 !~ /^root$/ && $2 !~ /^[!*]/ && $5 > 60 {print $1}' /etc/shadow"
-        check_mode: false
-        changed_when: false
-        register: rhel_07_010260_audit
-
-      - name: "MEDIUM | RHEL-07-010260 | PATCH | Reset password timeout to prevent locking out user."
-        ansible.builtin.shell: chage -d '-1 day' {{ item }}
-        with_items:
-            - "{{ rhel_07_010260_audit.stdout_lines }}"
-
-      - name: "MEDIUM | RHEL-07-010260 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime."
-        ansible.builtin.shell: "chage -M 60 {{ item }}"
-        with_items:
-            - "{{ rhel_07_010260_audit.stdout_lines }}"
-  tags:
-      - RHEL-07-010260
-      - password
 
 - name: "MEDIUM | RHEL-07-010280 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords are a minimum of 15 characters in length."
   ansible.builtin.lineinfile:
@@ -318,20 +307,17 @@
       - RHEL-07-010339
       - sudoers
 
-# - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-#   ansible.builtin.replace:
-#       path: "{{ item }}"
-#       regexp: '^([^#].*)NOPASSWD(.*)'
-#       replace: '\1PASSWD\2'
-#       validate: '/usr/sbin/visudo -cf %s'
-#   with_items:
-#       - "{{ rhel7stig_sudoers_files.stdout_lines }}"
-#   when:
-#       - rhel7stig_using_password_auth
-#       - rhel_07_010340
-#   tags:
-#       - RHEL-07-010340
-#       - sudoers
+- name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
+  ansible.builtin.replace:
+      path: "{{ item }}"
+      regexp: '^([^#].*)NOPASSWD(.*)'
+      replace: '\1PASSWD\2'
+      validate: '/usr/sbin/visudo -cf %s'
+  with_items:
+      - "{{ rhel7stig_sudoers_files.stdout_lines }}"
+  tags:
+      - RHEL-07-010340
+      - sudoers
 
 - name: "MEDIUM | RHEL-07-010341 | PATCH | The Red Hat Enterprise Linux operating system must restrict privilege elevation to authorized personnel."
   block:
