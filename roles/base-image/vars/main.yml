@@ -73,3 +73,8 @@ rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution | lower }}-rel
 # mcafee_agent_bucket: oea-administration
 # mcafee_agent_object: HBSS/20240131_LinuxHBSS_581313/install.sh
 mcafee_agent_path: /tmp/mcafee_install.sh
+
+# RHEL-07-010240 | RHEL-07-010260
+user_accounts:
+  - ec2-user
+  - ssm-user
