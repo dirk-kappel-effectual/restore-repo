@@ -9,7 +9,7 @@ auth        [default=die] pam_faillock.so authfail audit deny=3 even_deny_root f
 account     required      pam_faillock.so
 account     include       system-auth-ac
 
-password    requisite     pam_pwhistory.so remember=5 retry=3
+password    requisite     pam_pwhistory.so use_authtok remember=5 retry=3
 password    requisite     pam_pwquality.so retry=3
 password    include       system-auth-ac
 password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok
