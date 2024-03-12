@@ -161,38 +161,3 @@ rhel_07_040600_dns_servers:
 
 # The GID start point for interactive (non-system) users
 rhel7stig_int_gid: 1000
-
-# Control OL-07-040510
-# Sets the invalid rate limit for IPv4 connections. Should be set to less than 1000 to conform to STIG standards
-# ol7stig_ipv4_tcp_invalid_ratelimit: 500
-
-# Control RHEL-07-021031
-# This control sets all world writable files to be owned by root. To conform to STIG standard all world-writable files must be owned by root or another system account
-# With this toggle off it will list all world-writable files not owned by system accounts
-# rhel7stig_world_write_files_owner_root: false
-
-# RHEL-07-010343
-# The value given to Defaults timestamp timeout= in the sudo file.
-# Value must be greater than 0 to conform to STIG standards
-# rhel7stig_sudo_timestamp_timeout: 1
-
-## Goss configuration information
-# Where the goss configs and outputs are stored
-# audit_out_dir: '/opt'
-# Where the goss audit configuration will be stored
-# audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
-
-# If changed these can affect other products
-# pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-# post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-
-## The following should not need changing
-# audit_control_file: "{{ audit_conf_dir }}goss.yml"
-# audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
-# audit_results: |
-#       The pre remediation results are: {{ pre_audit_summary }}.
-#       The post remediation results are: {{ post_audit_summary }}.
-#       Full breakdown can be found in {{ audit_out_dir }}
-
-# The will define whether a base build is being created.
-# base_build: "{{ server_build == 'CIS-DISA-Benchmark' | ternary(true, false) }}"
