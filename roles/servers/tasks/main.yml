@@ -31,7 +31,7 @@
 
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
   ansible.builtin.debug:
-  msg: "Enforcing password use for privilege escalation."
+    msg: "Enforcing password use for privilege escalation."
   notify: privilege_escalation
   tags: 
     - privilege_escalation
