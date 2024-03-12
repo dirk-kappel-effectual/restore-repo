@@ -75,6 +75,16 @@ rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution | lower }}-rel
 mcafee_agent_path: /tmp/mcafee_install.sh
 
 # RHEL-07-010240 | RHEL-07-010260
+# user_accounts:
+#   - ec2-user
+#   - ssm-user
+
+# RHEL-07-010240 | RHEL-07-010260 | RHEL-07-010340
 user_accounts:
-  - ec2-user
-  - ssm-user
+  - name: ec2-user
+    description: "ec2-user password"
+  - name: ssm-user
+    description: "ssm-user password"
+  - name: root
+    description: "root password"
+user_passwords: {}
