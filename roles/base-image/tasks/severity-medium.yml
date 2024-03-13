@@ -274,6 +274,7 @@
       line: "PASS_MAX_DAYS 60"
       mode: 0644
   tags:
+      - password
       - RHEL-07-010250
       - login
 
@@ -331,9 +332,16 @@
         tags:
           Project: "Golden AMI"
       with_items: "{{ user_accounts }}"
+
+    - name: "MEDIUM | RHEL-07-010340 | RHEL-07-010280 | PATCH | Set passwords for user accounts."
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ user_passwords[item.name] | password_hash('sha512') }}"
+      with_items: "{{ user_accounts }}"
   tags:
-    - passwords
+    - password
     - RHEL-07-010340
+
 ###
 # - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
 #   ansible.builtin.replace:
