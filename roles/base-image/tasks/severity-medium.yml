@@ -320,13 +320,14 @@
         name: "/gold_image/{{ item.name }}"
         description: "{{ item.description }}"
         string_type: "SecureString"
-        key_id: "8a79dbf4-2d3c-4753-bb1e-3e443f1379ac"
+        key_id: "{{ kms_key_id }}"
         value: "{{ user_passwords[item.name] }}"
-        region: "us-east-1"
+        region: "us-east-1" # Update - Use below
+        # region: "us-gov-west-1"
         overwrite_value: "always"
         state: "present"
         tags:
-        Project: "Golden AMI"
+          Project: "Golden AMI"
       with_items: "{{ user_accounts }}"
   tags:
     - passwords
