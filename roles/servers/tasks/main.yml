@@ -42,6 +42,7 @@
   ansible.builtin.debug:
     msg: "Enforcing password use for privilege escalation."
   notify: "Privilege Escalation"
+  changed_when: true
   tags: 
     - privilege_escalation
 
