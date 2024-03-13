@@ -8,14 +8,11 @@
     name: amazon-cloudwatch-agent
     enabled: true
 
-- name: "privilege_escalation"
+- name: "Privilege Escalation"
   ansible.builtin.replace:
-      path: "{{ item.name }}"
+      path: "{{ item }}"
       regexp: '^([^#].*)NOPASSWD(.*)'
       replace: '\1PASSWD\2'
       validate: '/usr/sbin/visudo -cf %s'
   with_items:
-      - "{{ user_accounts }}"
-  tags:
-      - RHEL-07-010340
-      - sudoers
+      - "{{ rhel7stig_sudoers_files.stdout_lines }}"

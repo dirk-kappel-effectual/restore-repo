@@ -29,9 +29,18 @@
   tags:
     - firewall
 
+- name: "MEDIUM | RHEL-07-010340 | Find all sudoers files."
+  ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: rhel7stig_sudoers_files
+  tags:
+      - RHEL-07-010340
+
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
   ansible.builtin.debug:
     msg: "Enforcing password use for privilege escalation."
-  notify: privilege_escalation
+  notify: "Privilege Escalation"
   tags: 
     - privilege_escalation
