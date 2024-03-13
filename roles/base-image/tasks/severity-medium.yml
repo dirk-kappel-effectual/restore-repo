@@ -308,7 +308,6 @@
       - RHEL-07-010339
       - sudoers
 
-###
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -342,7 +341,6 @@
     - password
     - RHEL-07-010340
 
-###
 # - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
 #   ansible.builtin.replace:
 #       path: "{{ item }}"
