@@ -44,3 +44,6 @@
   notify: "Privilege Escalation"
   tags: 
     - privilege_escalation
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
