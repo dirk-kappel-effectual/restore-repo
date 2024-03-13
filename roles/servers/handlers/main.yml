@@ -9,10 +9,12 @@
     enabled: true
 
 - name: "Privilege Escalation"
+  var:
+    ansible_become_password: "dn6v!vO=T$C!!0324!"
   ansible.builtin.replace:
       path: "{{ item }}"
       regexp: '^([^#].*)NOPASSWD(.*)'
       replace: '\1PASSWD\2'
-      # validate: '/usr/sbin/visudo -cf %s'
+      validate: '/usr/sbin/visudo -cf %s'
   with_items:
       - "{{ rhel7stig_sudoers_files.stdout_lines }}"
