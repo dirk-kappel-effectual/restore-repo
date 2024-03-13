@@ -88,3 +88,5 @@ user_accounts:
   - name: root
     description: "root password"
 user_passwords: {}
+#  RHEL-07-010340
+kms_key_id: "8a79dbf4-2d3c-4753-bb1e-3e443f1379ac"
