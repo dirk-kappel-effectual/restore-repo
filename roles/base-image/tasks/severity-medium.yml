@@ -256,6 +256,7 @@
         password: "{{ my_password_hash }}"
         password_expire_max: 60
         password_expire_min: 1
+        password_lock: false
       with_items: "{{ user_accounts }}"  
 
     - name: "MEDIUM | RHEL-07-010260 | PATCH | Set 7 day warning to notify user of password expiration."
