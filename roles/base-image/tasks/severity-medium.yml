@@ -329,15 +329,15 @@
       - sudoers
 
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-    ansible.builtin.template:
-        src: "{{ item }}.j2"
-        dest: "/{{ item }}"
-        owner: root
-        group: root
-        mode: 0644
-    loop:
-        - etc/cloud/cloud.cfg
-        - etc/sudoers.d/90-cloud-init-users
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - etc/cloud/cloud.cfg
+    - etc/sudoers.d/90-cloud-init-users
 
 # - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
 #   ansible.builtin.replace:
