@@ -282,6 +282,10 @@
     - RHEL-07-010260
     - RHEL-07-010340
 
+- name: "Set password for ec2-user"
+  ansible.builtin.set_fact:
+    ansible_password: "{{ user_passwords[ec2-user] }}"  
+
 - name: "MEDIUM | RHEL-07-010250 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords for new users are restricted to a 60-day maximum lifetime."
   ansible.builtin.lineinfile:
       create: true
@@ -323,6 +327,17 @@
   tags:
       - RHEL-07-010339
       - sudoers
+
+- name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
+    ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "/{{ item }}"
+        owner: root
+        group: root
+        mode: 0644
+    loop:
+        - etc/cloud/cloud.cfg
+        - etc/sudoers.d/90-cloud-init-users
 
 # - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
 #   ansible.builtin.replace:
