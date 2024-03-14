@@ -26,6 +26,10 @@
             - libselinux-python3
   tags: python3
 
+- name: Setting python3 as interpreter
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: /usr/bin/python3
+    
 - name: "PRELIM | Install botocore and boto3 for Python 3"
   ansible.builtin.pip:
     name: "{{ item }}"

@@ -239,21 +239,35 @@
       - login
 
 - name: "MEDIUM | RHEL-07-010240 | RHEL-07-010260"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   block:
-    - name: Setting host facts using complex arguments
+    - name: Generate passwords
       ansible.builtin.set_fact:
-        my_password_hash: "{{ 'Mypa21ssword512!+zeAY2' | password_hash('sha512') }}"
+        user_passwords: "{{ user_passwords | combine({ item.name: lookup('community.general.random_string', length=12, min_lower=1, min_upper=1, min_numeric=1, min_special=1, override_special='-_=+!#$()[]') + '!' + ansible_date_time.month + ansible_date_time.year[-2:] + '!' }) }}"
+      with_items: "{{ user_accounts }}"
 
-    - name: Output password hash
-      ansible.builtin.debug:
-        var: my_password_hash
+    - name: Create or update key/value pairs in AWS SSM parameter store w/ tags
+      community.aws.ssm_parameter:
+        name: "/gold_image/{{ item.name }}"
+        description: "{{ item.description }}"
+        string_type: "SecureString"
+        key_id: "{{ kms_key_id }}"
+        value: "{{ user_passwords[item.name] }}"
+        region: "us-east-1" # Update - Use below
+        # region: "us-gov-west-1"
+        overwrite_value: "always"
+        state: "present"
+        tags:
+          Project: "Golden AMI"
+      with_items: "{{ user_accounts }}"
 
     - name: | 
         MEDIUM | RHEL-07-010240 | PATCH | Passwords must be restricted to a 24 hours/1 day minimum lifetime.
         MEDIUM | RHEL-07-010260 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that existing passwords are restricted to a 60-day maximum lifetime.
       ansible.builtin.user:
         name: "{{ item.name }}"
-        password: "{{ my_password_hash }}"
+        password: "{{ user_passwords[item.name] | password_hash('sha512') }}"
         password_expire_max: 60
         password_expire_min: 1
         password_lock: false
@@ -266,6 +280,7 @@
     - password
     - RHEL-07-010240
     - RHEL-07-010260
+    - RHEL-07-010340
 
 - name: "MEDIUM | RHEL-07-010250 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords for new users are restricted to a 60-day maximum lifetime."
   ansible.builtin.lineinfile:
@@ -308,39 +323,6 @@
   tags:
       - RHEL-07-010339
       - sudoers
-
-- name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-  block:
-    - name: Generate passwords
-      ansible.builtin.set_fact:
-        user_passwords: "{{ user_passwords | combine({ item.name: lookup('community.general.random_string', length=12, min_lower=1, min_upper=1, min_numeric=1, min_special=1, override_special='-_=+!#$()[]') + '!' + ansible_date_time.month + ansible_date_time.year[-2:] + '!' }) }}"
-      with_items: "{{ user_accounts }}"
-
-    - name: Create or update key/value pairs in AWS SSM parameter store w/ tags
-      community.aws.ssm_parameter:
-        name: "/gold_image/{{ item.name }}"
-        description: "{{ item.description }}"
-        string_type: "SecureString"
-        key_id: "{{ kms_key_id }}"
-        value: "{{ user_passwords[item.name] }}"
-        region: "us-east-1" # Update - Use below
-        # region: "us-gov-west-1"
-        overwrite_value: "always"
-        state: "present"
-        tags:
-          Project: "Golden AMI"
-      with_items: "{{ user_accounts }}"
-
-    - name: "MEDIUM | RHEL-07-010340 | RHEL-07-010280 | PATCH | Set passwords for user accounts."
-      ansible.builtin.user:
-        name: "{{ item.name }}"
-        password: "{{ user_passwords[item.name] | password_hash('sha512') }}"
-      with_items: "{{ user_accounts }}"
-  tags:
-    - password
-    - RHEL-07-010340
 
 # - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
 #   ansible.builtin.replace:

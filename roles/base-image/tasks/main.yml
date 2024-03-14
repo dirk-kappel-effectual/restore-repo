@@ -26,6 +26,16 @@
   tags:
       - prelim_tasks
 
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
+
 - name: Gather the package facts
   ansible.builtin.package_facts:
       manager: auto
@@ -38,11 +48,31 @@
   tags:
       - oldcc-base
 
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
+
 - name: Install additional volumes for separate partitions of /home, /var, /var/log, /var/log/audit, and /var/tmp
   ansible.builtin.import_tasks:
       file: volumes.yml
   tags:
       - volumes
+
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
 
 - name: HIGH Severity
   ansible.builtin.import_tasks:
@@ -50,17 +80,47 @@
   tags:
       - high
 
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
+
 - name: MEDIUM Severity
   ansible.builtin.import_tasks:
       file: severity-medium.yml
   tags:
       - medium
 
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
+
 - name: LOW Severity
   ansible.builtin.import_tasks:
       file: severity-low.yml
   tags:
       - low
+
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
 
 - name: update auditd
   ansible.builtin.template:
@@ -74,5 +134,25 @@
   tags:
       - auditd
 
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
+
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+- name: "Get password lock status of ec2-user"
+  block:
+    - name: "Password lock status of ec2-user"
+      ansible.builtin.command: "grep ec2-user /etc/shadow"
+      register: ec2_password_lock_status
+
+    - name: "Output Password lock status of ec2-user"
+      ansible.builtin.debug:
+        var: ec2_password_lock_status.stdout
