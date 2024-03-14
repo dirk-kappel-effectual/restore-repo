@@ -284,7 +284,7 @@
 
 - name: "Set password for ec2-user"
   ansible.builtin.set_fact:
-    ansible_password: "{{ user_passwords[ec2-user] }}"  
+    ansible_password: "{{ user_passwords['ec2-user'] }}"  
 
 - name: "MEDIUM | RHEL-07-010250 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that passwords for new users are restricted to a 60-day maximum lifetime."
   ansible.builtin.lineinfile:
