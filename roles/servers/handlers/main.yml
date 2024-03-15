@@ -9,8 +9,6 @@
     enabled: true
 
 - name: "Privilege Escalation"
-  vars:
-    ansible_become_password: "dn6v!vO=T$C!!0324!"
   ansible.builtin.replace:
       path: "{{ item }}"
       regexp: '^([^#].*)NOPASSWD(.*)'
