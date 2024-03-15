@@ -5,3 +5,6 @@ user_accounts:
   - name: ec2-user
   - name: ssm-user
   - name: root
+
+
+ansible_password: "P]2vU[yGj7[w!0324!"
