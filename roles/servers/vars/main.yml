@@ -7,4 +7,4 @@ user_accounts:
   - name: root
 
 
-ansible_password: "P]2vU[yGj7[w!0324!"
+ansible_become_password: "P]2vU[yGj7[w!0324!"
