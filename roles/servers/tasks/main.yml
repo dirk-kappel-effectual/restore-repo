@@ -38,12 +38,19 @@
   tags:
       - RHEL-07-010340
 
+- name: "Lookup ec2-user password from parameter store"
+  ansible.builtin.set_fact:
+    ansible_become_password: "{{ lookup('amazon.aws.aws_ssm', '/gold_image/ec2-user') }}"
+
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-  ansible.builtin.debug:
-    msg: "Enforcing password use for privilege escalation."
-  notify: "Privilege Escalation"
-  changed_when: true
-  tags: 
+  ansible.builtin.replace:
+      path: "{{ item }}"
+      regexp: '^([^#].*)NOPASSWD(.*)'
+      replace: '\1PASSWD\2'
+      validate: '/usr/sbin/visudo -cf %s'
+  with_items:
+      - "{{ rhel7stig_sudoers_files.stdout_lines }}"
+  tags:
     - privilege_escalation
 
 - name: flush handlers
