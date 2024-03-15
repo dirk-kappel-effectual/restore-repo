@@ -1,24 +1,4 @@
 ---
-- name: Get Python3 Version
-  command: python3 --version
-  register: python_version_output
-
-- name: Get botocore Version
-  command: pip show botocore | grep Version | awk '{print $2}'
-  register: botocore_version_output
-  changed_when: false
-
-- name: Get boto3 Version
-  command: pip show boto3 | grep Version | awk '{print $2}'
-  register: boto3_version_output
-  changed_when: false
-
-- name: Display Versions
-  debug:
-    msg: |
-      Python Version: {{ python_version_output.stdout }}
-      botocore Version: {{ botocore_version_output.stdout }}
-      boto3 Version: {{ boto3_version_output.stdout }}
 
 - name: Install AWS Cloudwatch Agent
   block:
