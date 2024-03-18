@@ -39,6 +39,8 @@
       - RHEL-07-010340
 
 - name: "Assume Role"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   amazon.aws.sts_assume_role:
     role_arn: "arn:aws:iam::725857994970:role/GitHubAction-AssumeRoleWithAction"
     role_session_name: "GitHub_to_AWS_via_FederatedOIDC"
@@ -47,7 +49,7 @@
 - name: "View role assumed"
   ansible.builtin.debug:
     var: assumed_role
-    
+
 # - name: "Lookup ec2-user password from parameter store"
 #   ansible.builtin.command: /usr/local/bin/aws ssm get-parameter-history --name "/gold_image/ec2-user" --with-decryption --query "Parameters[?contains(Labels, '{{ BASE_AMI }}')].Value | [0]" --output text
 #     access_key: "{{ assumed_role.sts_creds.access_key }}"
