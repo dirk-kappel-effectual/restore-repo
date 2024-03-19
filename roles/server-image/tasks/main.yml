@@ -65,5 +65,5 @@
     - privilege_escalation
     - RHEL-07-010340
 
-- name: flush handlers
-  ansible.builtin.meta: flush_handlers
+# - name: flush handlers
+#   ansible.builtin.meta: flush_handlers
