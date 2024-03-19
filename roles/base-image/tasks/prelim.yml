@@ -24,7 +24,8 @@
         loop:
             - python36-rpm
             - libselinux-python3
-  tags: python3
+  tags: 
+    - python3
     
 - name: "PRELIM | Install botocore and boto3 for Python 3"
   ansible.builtin.pip:
@@ -299,7 +300,7 @@
     var: block_device_name
   when: block_device_name is defined
 
-- name: "PRELIM | Make /tmp directory executable temporarily"
+- name: "PRELIM | Make /tmp directory temporarily executable."
   ansible.posix.mount:
     path: /tmp
     state: remounted
