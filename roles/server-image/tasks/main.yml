@@ -1,7 +1,6 @@
 ---
 
 - name: Install AWS Cloudwatch Agent
-  become: true
   block:
     - name: Download CloudWatch Agent
       ansible.builtin.get_url:
@@ -21,56 +20,25 @@
         owner: root
         group: root
         mode: 0644
-      # notify: "Enable CloudWatch Agent"
+
+    - name: "Enable CloudWatch Agent"
+      ansible.builtin.service:
+        name: amazon-cloudwatch-agent
+        enabled: true
   tags: 
     - cloudwatch
 
-- name: "Enable CloudWatch Agent"
-  become: true
-  ansible.builtin.service:
-    name: amazon-cloudwatch-agent
-    enabled: true
-  tags:
-    - cloudwatch
-
 - name: Install Iptables
-  become: true
   ansible.builtin.import_tasks:
     file: firewall.yml
   tags:
     - firewall
 
-- name: start iptables
-  become: true
-  ansible.builtin.service:
-    name: iptables
-    enabled: true
-  tags:
-    - firewall
-
-# - name: "MEDIUM | RHEL-07-010340 | Find all sudoers files."
-#   become: true
-#   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
-#   changed_when: false
-#   failed_when: false
-#   check_mode: false
-#   register: rhel7stig_sudoers_files
-#   tags:
-#       - RHEL-07-010340
-
 - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-  become: true
   ansible.builtin.replace:
-    # path: "{{ item }}"
     path: "/etc/sudoers"
     regexp: '^([^#].*)NOPASSWD:(.*)'
     replace: '\1\2'
-    # validate: '/usr/sbin/visudo -cf %s'
-  # with_items:
-  #   - "{{ rhel7stig_sudoers_files.stdout_lines }}"
   tags:
     - privilege_escalation
     - RHEL-07-010340
-
-# - name: flush handlers
-#   ansible.builtin.meta: flush_handlers

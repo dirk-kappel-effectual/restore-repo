@@ -1,9 +1,0 @@
-- name: start iptables
-  ansible.builtin.service:
-      name: iptables
-      enabled: true
-
-- name: "Enable CloudWatch Agent"
-  ansible.builtin.service:
-    name: amazon-cloudwatch-agent
-    enabled: true

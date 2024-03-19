@@ -20,12 +20,18 @@
 
     - name: "MEDIUM | RHEL-07-040100 | PATCH | Restore iptables from file"
       ansible.builtin.shell: iptables-restore /tmp/iptables
-      # notify: start iptables
 
     - name: "MEDIUM | RHEL-07-040100 | PATCH | Save iptables configuration file"
       community.general.iptables_state:
         state: saved
         path: /etc/sysconfig/iptables
+
+    - name: start iptables
+      ansible.builtin.service:
+        name: iptables
+        enabled: true
   tags:
       - RHEL-07-040100
       - firewall
+
+
