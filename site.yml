@@ -1,5 +1,0 @@
----
-- hosts: default
-  become: true
-  roles:
-  - base-image
