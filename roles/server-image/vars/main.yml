@@ -1,0 +1,7 @@
+---
+
+# RHEL-07-010340
+user_accounts:
+  - name: ec2-user
+  - name: ssm-user
+  - name: root

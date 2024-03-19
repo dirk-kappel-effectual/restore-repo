@@ -1,0 +1,25 @@
+# Created from ansible template Jan 17 2024
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+-A INPUT -p tcp --dport 8834 -j ACCEPT
+-A INPUT -p tcp --dport https -j ACCEPT
+-A INPUT -p tcp --dport http -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -s 127.0.0.0/8 -j DROP
+-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
+-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
+-A INPUT -p tcp --dport ssh -m state --state NEW -j ACCEPT
+-A INPUT -p udp --dport bootpc -m state --state NEW -j ACCEPT
+-A INPUT -p udp --dport ntp -m state --state NEW -j ACCEPT
+-A INPUT -p udp --dport 323 -m state --state NEW -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -j ACCEPT
+-A OUTPUT -j ACCEPT
+-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+COMMIT
+# Completed on Jan 17 2024
