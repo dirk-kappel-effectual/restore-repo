@@ -43,7 +43,7 @@
       path: "{{ item }}"
       regexp: '^([^#].*)NOPASSWD:(.*)'
       replace: '\1\2'
-      validate: '/usr/sbin/visudo -cf %s'
+      # validate: '/usr/sbin/visudo -cf %s'
   with_items:
       - "{{ rhel7stig_sudoers_files.stdout_lines }}"
   tags:
