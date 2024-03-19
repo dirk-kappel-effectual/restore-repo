@@ -242,7 +242,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   block:
-    - name: Generate passwords
+    - name: Generate account passwords
       ansible.builtin.set_fact:
         user_passwords: "{{ user_passwords | combine({ item.name: lookup('community.general.random_string', length=12, min_lower=1, min_upper=1, min_numeric=1, min_special=1, override_special='-_=+!#$()[]') + '!' + ansible_date_time.month + ansible_date_time.year[-2:] + '!' }) }}"
       with_items: "{{ user_accounts }}"
@@ -254,8 +254,7 @@
         string_type: "SecureString"
         key_id: "{{ kms_key_id }}"
         value: "{{ user_passwords[item.name] }}"
-        region: "us-east-1" # Update - Use below
-        # region: "us-gov-west-1"
+        region: "us-east-1" # Update for OLDCC gov cloud region
         overwrite_value: "always"
         state: "present"
         tags:
@@ -338,18 +337,6 @@
   loop:
     - etc/cloud/cloud.cfg
     - etc/sudoers.d/90-cloud-init-users
-
-# - name: "MEDIUM | RHEL-07-010340 | PATCH | The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation."
-#   ansible.builtin.replace:
-#       path: "{{ item }}"
-#       regexp: '^([^#].*)NOPASSWD(.*)'
-#       replace: '\1PASSWD\2'
-#       validate: '/usr/sbin/visudo -cf %s'
-#   with_items:
-#       - "{{ rhel7stig_sudoers_files.stdout_lines }}"
-#   tags:
-#       - RHEL-07-010340
-#       - sudoers
 
 - name: "MEDIUM | RHEL-07-010341 | PATCH | The Red Hat Enterprise Linux operating system must restrict privilege elevation to authorized personnel."
   block:
