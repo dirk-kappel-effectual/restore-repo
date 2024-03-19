@@ -74,11 +74,6 @@ rpm_gpg_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-{{ ansible_distribution | lower }}-rel
 # mcafee_agent_object: HBSS/20240131_LinuxHBSS_581313/install.sh
 mcafee_agent_path: /tmp/mcafee_install.sh
 
-# RHEL-07-010240 | RHEL-07-010260
-# user_accounts:
-#   - ec2-user
-#   - ssm-user
-
 # RHEL-07-010240 | RHEL-07-010260 | RHEL-07-010340
 user_accounts:
   - name: ec2-user
@@ -88,5 +83,6 @@ user_accounts:
   - name: root
     description: "root password"
 user_passwords: {}
+
 #  RHEL-07-010340
 kms_key_id: "8a79dbf4-2d3c-4753-bb1e-3e443f1379ac"  # Update
